@@ -10,7 +10,7 @@ abcd=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD
 job=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/code_abcd/job
 code=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/code_abcd/
 datafolder=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/data_rerun
-
+targetfolder=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/fs_rerun
 CMD_batch=$job/batch.recon.${list}
 rm -rf $CMD_batch
 
@@ -59,6 +59,16 @@ source $FREESURFER_HOME/SetUpFreeSurfer.sh
 SUBJECTS_DIR=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/fs_rerun
 ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=64
 
+################################################################################
+#################   STAGING IN  ################################################
+#echo "now fetching the recon-all files to SSD space"
+#target=/local/scratch/
+#source=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/NKI/fs/${subject}_${sess}
+#cp -rvf \${source} \${target}
+################################################################################
+
+
+
 recon-all -all -s ${SUBJECT} -i ${t1} ${t2_arg} ${hippo_arg} -parallel -openmp 64
 
 ######### COUNTER ##############################################################
@@ -83,7 +93,17 @@ kill \$pid
 #sleep $((${hr}*3600-21*60)) && kill \$pid
 ################################################################################
 
-echo "I THINK RECON-ALL IS DONE BY NOW"
+################################################################################
+#################   STAGING OUT#################################################
+echo "now fetching the recon-all files to SCRATCH space"
+source=/local/scratch/${SUBJECT}
+cp -rvf \${source} \${targetfolder}
+
+################################################################################
+################################################################################
+EOA
+
+echo "I THINK EVERYTHING IS DONE BY NOW"
 EOC
 ####################################################################################
 
