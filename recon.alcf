@@ -70,7 +70,7 @@ do
 sleep 60
 counter=$[$counter+60]
 
-  if [ -e /local/scratch/${subject}_${sess}/scripts/recon-all.done ]
+  if [ -e /local/scratch/${SUBJECT}/scripts/recon-all.done ]
   then
   echo "##############recon-all is done so break the timer#####################"
   break
