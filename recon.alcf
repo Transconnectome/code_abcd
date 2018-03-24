@@ -1,6 +1,6 @@
 #!/bin/bash
 #usage: recon_1.sh batch#
-hr=6
+hr=24
 
 list=$1 #e.g., list_file_t1w.txt
 N=`wc ${1} | awk '{print $1}'`
