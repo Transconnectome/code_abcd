@@ -1,22 +1,25 @@
 #!/bin/bash
 #usage: recon_1.sh batch#
+hr=6
 
-list=list_t1_batch${1}.txt
-
-echo $list
+list=$1 #e.g., list_file_t1w.txt
+N=`wc ${1} | awk '{print $1}'`
 threads=64
+#threadsX2=$((${threads}*2))
+abcd=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD
+job=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/code_abcd/job
+code=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/code_abcd/
+datafolder=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/data_rerun
 
-abcd=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/
-
-CMD_batch=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/abcd_alcf_code/job/cobaltjob.recon.batch${1}
+CMD_batch=$job/batch.recon.${list}
 rm -rf $CMD_batch
 
 ####################################################################################
 cat<<EOA >$CMD_batch
 #!/bin/bash
-#COBALT -t 24:00:00
-#COBALT -n 1000
-#COBALT --attrs mcdram=cache:numa=quad
+#COBALT -t ${hr}:00:00
+#COBALT -n $N
+#COBALT --attrs mcdram=cache:numa=quad:ssds=required:ssd_size=10
 #COBALT -A Child_Connectome
 #COBLAT -M jiook.cha@nyspi.columbia.edu
 
@@ -25,14 +28,11 @@ echo start............................................
 EOA
 #####################################################################
 
-
-
-
 i=1
-for s in `cat /lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/abcd_alcf_code/\$list`
+for s in `cat $code/\$list`
 do
 #s=`echo $SUBJECT | egrep -o '[0-9]{8}'`
-CMD=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/abcd_alcf_code/job/cmd.recon.${s}
+CMD=$job/cmd.recon.${s}
 rm -rf $CMD
 
 #CMD_sub=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/abcd_alcf_code/job/cmd_sub.recon.${s}
@@ -40,7 +40,6 @@ rm -rf $CMD
 
 SUBJECT=${s}
 echo ${SUBJECT}
-datafolder=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/data
 t1=${datafolder}/${s}/ses-baselineYear1Arm1/anat/${s}_ses-baselineYear1Arm1_T1w.nii.gz
 t2=${datafolder}/${s}/ses-baselineYear1Arm1/anat/${s}_ses-baselineYear1Arm1_T2w.nii.gz
   if [ ! -e $t2 ]; then t2_arg=" "
@@ -57,7 +56,7 @@ cat<<EOC >$CMD
 source ~/.bashrc
 FREESURFER_HOME=/lus/theta-fs0/projects/AD_Brain_Imaging/app/freesurfer
 source $FREESURFER_HOME/SetUpFreeSurfer.sh
-SUBJECTS_DIR=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/fs
+SUBJECTS_DIR=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/fs_rerun
 ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=64
 
 recon-all -all -s ${SUBJECT} -i ${t1} ${t2_arg} ${hippo_arg} -parallel -openmp 64
@@ -103,6 +102,4 @@ echo "wait" >> $CMD_batch
 
 echo $CMD_batch
 chmod +x $CMD_batch
-qsub $CMD_batch
-#$code/fsl_sub_hpc_2 -s smp,$threads -l /ifs/scratch/pimri/posnerlab/1anal/adni/adni_on_c2b2/job -t $CMD_batch
-#$code/fsl_sub_hpc_6 -l /ifs/scratch/pimri/posnerlab/1anal/adni/adni_on_c2b2/job -t $CMD_batch
+echo qsub $CMD_batch
