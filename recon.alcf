@@ -97,7 +97,7 @@ kill \$pid
 #################   STAGING OUT#################################################
 echo "now fetching the recon-all files to SCRATCH space"
 source=/local/scratch/${SUBJECT}
-cp -rvf \${source} ${targetfolder}
+cp -rvf ${source} ${targetfolder}
 
 ################################################################################
 ################################################################################
