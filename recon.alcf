@@ -10,7 +10,6 @@ abcd=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD
 job=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/code_abcd/job
 code=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/code_abcd/
 datafolder=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/data_rerun
-targetfolder=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/fs_rerun
 CMD_batch=$job/batch.recon.${list}
 rm -rf $CMD_batch
 
@@ -67,8 +66,6 @@ ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=64
 #cp -rvf \${source} \${target}
 ################################################################################
 
-
-
 recon-all -all -s ${SUBJECT} -i ${t1} ${t2_arg} ${hippo_arg} -parallel -openmp 64
 
 ######### COUNTER ##############################################################
@@ -97,7 +94,8 @@ kill \$pid
 #################   STAGING OUT#################################################
 echo "now fetching the recon-all files to SCRATCH space"
 source=/local/scratch/${SUBJECT}
-cp -rvf ${source} ${targetfolder}
+targetfolder=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/ABCD/fs_rerun
+cp -rvf \${source} \${targetfolder}
 
 ################################################################################
 ################################################################################
