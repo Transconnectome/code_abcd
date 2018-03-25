@@ -78,7 +78,7 @@ limit=$((${hr}*3600-21*60))
 while [ \$counter -le \$limit ]
 do
 sleep 60
-counter=$[$counter+60]
+counter=\$[\$counter+60]
 
   if [ -e /local/scratch/${SUBJECT}/scripts/recon-all.done ]
   then
