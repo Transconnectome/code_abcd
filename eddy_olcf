@@ -1,0 +1,96 @@
+#!/bin/bash
+# this script is just for eddy_cuda
+# this is eddy_cuda for abcd study
+
+list=$1
+N=`wc ${1} | awk '{print $1}'`
+
+currentdir=/lustre/atlas/proj-shared/med104/data/ABCD/data
+#nki=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/NKI/data
+
+git=/lustre/atlas/proj-shared/med104/data/ABCD/code_abcd
+CMD_batch=$git/job/batch.cmd1.eddy.olcf.${list}
+rm -rf $CMD_batch
+
+#######################################################################################################
+cat<<EOC >$CMD_batch
+#!/bin/bash
+#PBS -A med104
+#PBS -N eddy
+#PBS -m abe
+#PNS -M jiook.cha@nyspi.columbia.edu
+#PBS -j oe
+#PBS -l walltime=2:00:00,nodes=$N
+#PBS -l gres=atlas1%atlas2
+
+OMP_NUM_THREADS=16
+echo start............................................
+
+cd /lustre/atlas/proj-shared/med104/data/ABCD/data
+
+EOC
+
+#######################################################################################################
+i=1
+for s in `cat \$git/\$list`
+
+do
+
+  CMD=$git/job/eddy.olcf.${s}
+  rm -rf $CMD
+
+  LOG=$git/job/log.eddy.olcf.${s}
+  rm -rf $LOG
+
+  subject=`echo $s | cut -d "_" -f1`
+  sess=`echo $s | cut -d "_" -f2`
+
+  SUBJECT=${subject}_${sess}
+
+  slspec=/lustre/atlas2/med104/proj-shared/data/NKI/eddy_nki/my_slspec.txt
+#echo ${SUBJECT}
+
+cat<<EOC >$CMD
+#!/bin/bash
+
+
+#1.
+echo converting && time mrconvert $s/*dwi.nii.gz -force $s/mr_dwi.mif -fslgrad $s/*dwi.bvec $s/*dwi.bval \
+            -datatype float32 -stride 0,0,0,1
+
+# 2. denoising (time:1m)
+echo denoiseing && time dwidenoise $s/mr_dwi.mif -force $s/mr_dwi_denoised.mif
+
+# 3. gibbs ringing
+echo gibbs rining && time mrdegibbs $s/mr_dwi_denoised.mif $s/mr_dwi_denoised_gibbs.mif -force
+
+# 3. eddy (time:60m)
+echo eddy && time dwipreproc $s/mr_dwi_denoised_gibbs.mif $s/mr_dwi_denoised_gibbs_preproc.mif \
+            -pe_dir AP \
+            -rpe_none \
+            -eddy_options " --niter=8 --fwhm=10,8,4,2,0,0,0,0 --repol --mporder=6 \
+              --slspec=$slspec --s2v_niter=5 --s2v_lambda=1 \
+              --s2v_interp=trilinear -v " \
+            -nocleanup -force -debug -cuda
+
+if [ -e $s/mr_dwi_denoised_gibbs_crop_preproc.mif ];then echo eddy is complete
+else echo is NOT complete
+fi
+EOC
+chmod +x $CMD
+
+echo "aprun -n 1 -N 1 -d 16 $CMD > $LOG 2>&1 &">>$CMD_batch
+
+echo "sleep 0.2">>$CMD_batch
+i=$(($i+1))
+echo $i
+#echo "execute $CMD_sub"
+
+done
+
+echo "wait" >> $CMD_batch
+### batch submission
+
+echo $CMD_batch
+chmod +x $CMD_batch
+qsub $CMD_batch
