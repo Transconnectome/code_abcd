@@ -108,7 +108,8 @@ recon-all -all \
     -s ${SUBJECT} \
     -i ${t1} \
     ${t2_arg} \
-    ${hippo_arg}
+    ${hippo_arg} \
+    -parallel -openmp 2
 
 ################################################################################
 ################################################################################
@@ -131,7 +132,7 @@ done
 rm batch_fs_*
 n_list=`wc ${list} | awk '{print $1}'`
 # n_split=$((n_list/119+1))
-n_split=$((48*16))
+n_split=$((24*32))
 split -l $n_split $CMD_batch batch_fs_
 
 for b in `ls batch_fs_*`
@@ -145,8 +146,8 @@ cat<<EOM > $launch_script
 #%###SBATCH -e ./job/ABCD_a2.e%j       # Name of stderr error file
 #SBATCH -p skx-normal          # Queue (partition) name
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
-#SBATCH -N 16                            # Total # of nodes
-#SBATCH --ntasks-per-node 48            # Total # of mpi tasks
+#SBATCH -N 32                            # Total # of nodes
+#SBATCH --ntasks-per-node 24            # Total # of mpi tasks
 #SBATCH -t 48:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
 #SBATCH --mail-type=all    # Send email at begin and end of job
