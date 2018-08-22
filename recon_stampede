@@ -145,8 +145,8 @@ cat<<EOM > $launch_script
 #%###SBATCH -o ./job/ABCD_a2.o%j       # Name of stdout output file
 #%###SBATCH -e ./job/ABCD_a2.e%j       # Name of stderr error file
 #SBATCH -p skx-normal          # Queue (partition) name
-######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
-#SBATCH -N 32                            # Total # of nodes
+#SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
+######SBATCH -N 32                            # Total # of nodes
 #SBATCH --ntasks-per-node 24            # Total # of mpi tasks
 #SBATCH -t 48:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
