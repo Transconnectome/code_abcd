@@ -6,7 +6,7 @@ threads=96
 #threadsX2=$((${threads}*2))
 
 ABCD=/scratch/03263/jcha9928/data/ABCD/
-ABCD_code=$ABCD/code_oasis
+ABCD_code=$ABCD/abcd
 ABCD_job=$ABCD_code/job
 #DATA_target=$STERN/image03/dwi_eddy
 
