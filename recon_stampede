@@ -137,16 +137,19 @@ split -l $n_split $CMD_batch batch_fs_
 
 for b in `ls batch_fs_*`
 do
-launch_script=${ABCD_job}/script_${b}
 
+launch_script=${ABCD_job}/script_${b}
+n_line=`wc -l $b | awk '{print $1}'`
+number_of_nodes=`$((n_line/24)) | bc`
 cat<<EOM > $launch_script
 #!/bin/bash
 #SBATCH -J nc_${b}          # Job name
 #%###SBATCH -o ./job/ABCD_a2.o%j       # Name of stdout output file
 #%###SBATCH -e ./job/ABCD_a2.e%j       # Name of stderr error file
 #SBATCH -p skx-normal          # Queue (partition) name
-#SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
+######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 ######SBATCH -N 32                            # Total # of nodes
+#SBATCH -N $number_of_nodes
 #SBATCH --ntasks-per-node 24            # Total # of mpi tasks
 #SBATCH -t 48:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
