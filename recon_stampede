@@ -140,6 +140,7 @@ do
 
 launch_script=${ABCD_job}/script_${b}
 n_line=`wc -l $b | awk '{print $1}'`
+echo n_line is ${n_line}
 number_of_nodes=`$((n_line/24)) | bc`
 echo number_of_nodes are ${number_of_nodes}
 
