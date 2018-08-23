@@ -41,7 +41,7 @@ do
 # ###########################################################################
 #
 SUBJECT=${s}
-echo ${SUBJECT}
+#echo ${SUBJECT}
 datafolder=$ABCD/data
 t1=${datafolder}/${s}/ses-baselineYear1Arm1/anat/${s}_ses-baselineYear1Arm1_T1w.nii.gz
 t2=${datafolder}/${s}/ses-baselineYear1Arm1/anat/${s}_ses-baselineYear1Arm1_T2w.nii.gz
