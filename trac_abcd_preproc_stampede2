@@ -67,6 +67,8 @@ mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-01_dwi.nii \
           \$dwi_folder/${s}_ses-baselineYear1Arm1_run-01_dwi.bval \
           -force -nthreads ${threads}
 
+if [ -e \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii ]; then
+do
 mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii \
           ./dwi_run-02.mif \
           -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.json \
@@ -75,6 +77,8 @@ mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii \
           -force -nthreads ${threads}
 mrcat ./dwi_run-01.mif ./dwi_run-02.mif ./mr_dwi.mif -force -nthreads ${threads}
 
+else cp ./dwi_run-01.mif ./mr_dwi.mif
+done
 
 # 2. denoising (time:1m)
     echo dwidenoise
@@ -119,11 +123,18 @@ sleep 0.1
 # -nocleanup -force
 #  sleep 0.1
 
+
 dwipreproc mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif
-          -rpe_all \
+          -rpe_header \
           -eddy_options " --niter=8 --fwhm=10,6,4,2,0,0,0,0 --repol --ol_type=both " \
           -eddyqc_all ./eddy_output \
           -force -nthreads ${threads}
+
+# dwipreproc mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif
+#           -rpe_all \
+#           -eddy_options " --niter=8 --fwhm=10,6,4,2,0,0,0,0 --repol --ol_type=both " \
+#           -eddyqc_all ./eddy_output \
+#           -force -nthreads ${threads}
 
   #pigz --fast -b 1280 -f mr_dwi_denoised_gibbs_preproc.mif
 ##########-readout_time 0.0691181 \#############??????????????????????????????\
