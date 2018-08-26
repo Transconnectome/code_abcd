@@ -507,7 +507,7 @@ done
 ### batch submission############################################################
 rm batch_abcd_*
 
-split -l 200 $CMD_batch batch_abcd_
+split -l 256 $CMD_batch batch_abcd_
 
 for b in `ls batch_abcd_*`
 do
