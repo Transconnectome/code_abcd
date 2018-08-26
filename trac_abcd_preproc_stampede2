@@ -62,16 +62,16 @@ echo current directory is \`pwd\`
 dwi_folder=$ABCD/data/${s}/ses-baselineYear1Arm1/dwi/
 mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-01_dwi.nii \
           ./dwi_run-01.mif \
-          -json_import ${s}_ses-baselineYear1Arm1_run-01_dwi.json \
-          -fslgrad ${s}_ses-baselineYear1Arm1_run-01_dwi.bvec \
-          ${s}_ses-baselineYear1Arm1_run-01_dwi.bval \
+          -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-01_dwi.json \
+          -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-01_dwi.bvec \
+          \$dwi_folder/${s}_ses-baselineYear1Arm1_run-01_dwi.bval \
           -force -nthreads ${threads}
 
 mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii \
           ./dwi_run-02.mif \
-          -json_import ${s}_ses-baselineYear1Arm1_run-02_dwi.json \
-          -fslgrad ${s}_ses-baselineYear1Arm1_run-02_dwi.bvec \
-          ${s}_ses-baselineYear1Arm1_run-02_dwi.bval \
+          -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.json \
+          -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.bvec \
+          \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.bval \
           -force -nthreads ${threads}
 mrcat ./dwi_run-01.mif ./dwi_run-02.mif ./mr_dwi.mif -force -nthreads ${threads}
 
