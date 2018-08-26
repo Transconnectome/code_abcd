@@ -493,9 +493,9 @@ echo "$CMD > output_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} " >> $CMD_batch
 done
 
 ### batch submission############################################################
-split -l 60 $CMD_batch batch
+split -l 60 $CMD_batch batch_abcd_
 
-for b in `ls batch*`
+for b in `ls batch_abcd_*`
 do
 launch_script=${ABCD_job}/script_${b}
 
