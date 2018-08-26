@@ -68,7 +68,6 @@ mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-01_dwi.nii \
           -force -nthreads ${threads}
 
 if [ -e \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii ]; then
-do
 mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii \
           ./dwi_run-02.mif \
           -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.json \
@@ -78,7 +77,7 @@ mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii \
 mrcat ./dwi_run-01.mif ./dwi_run-02.mif ./mr_dwi.mif -force -nthreads ${threads}
 
 else cp ./dwi_run-01.mif ./mr_dwi.mif
-done
+fi
 
 # 2. denoising (time:1m)
     echo dwidenoise
@@ -504,7 +503,7 @@ echo "$CMD > output_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} " >> $CMD_batch
 done
 
 ### batch submission############################################################
-split -l 60 $CMD_batch batch_abcd_
+split -l 200 $CMD_batch batch_abcd_
 
 for b in `ls batch_abcd_*`
 do
