@@ -126,7 +126,7 @@ sleep 0.1
 dwipreproc mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif \
           -rpe_none \
           -pe_dir PA \
-          -eddy_options " --niter=8 --fwhm=10,6,4,2,0,0,0,0 --repol --ol_type=both " \
+          -eddy_options " --niter=8 --fwhm=10,6,4,2,0,0,0,0 --repol " \
           -eddyqc_all ./eddy_output \
           -force -nthreads ${threads}
 
