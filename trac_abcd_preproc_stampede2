@@ -339,12 +339,12 @@ sleep 0.1
 sleep 0.1
 
 labelconvert aparc+aseg_diff_flt_dof6_warped_synant_upsample125.nii.gz $FREESURFER_HOME/FreeSurferColorLUT.txt \
-	/lus/theta-fs0/projects/AD_Brain_Imaging/app/mrtrix3/share/mrtrix3/labelconvert/fs_default.txt \
+	/work/03263/jcha9928/stampede2/app/mrtrix3/share/mrtrix3/labelconvert/fs_default.txt \
 	nodes_aparc+aseg.mif -force
 sleep 0.1
 
 labelconvert aparc.a2009s+aseg_diff_flt_dof6_warped_synant_upsample125.nii.gz $FREESURFER_HOME/FreeSurferColorLUT.txt \
-	/lus/theta-fs0/projects/AD_Brain_Imaging/app/mrtrix3/share/mrtrix3/labelconvert/fs_a2009s.txt \
+	/work/03263/jcha9928/stampede2/app/mrtrix3/share/mrtrix3/labelconvert/fs_a2009s.txt \
 	nodes_aparc.a2009s+aseg.mif -force
 sleep 0.1
 
