@@ -123,13 +123,13 @@ sleep 0.1
 #  sleep 0.1
 
 
-dwipreproc mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif
+dwipreproc mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif \
           -rpe_header \
           -eddy_options " --niter=8 --fwhm=10,6,4,2,0,0,0,0 --repol --ol_type=both " \
           -eddyqc_all ./eddy_output \
           -force -nthreads ${threads}
 
-# dwipreproc mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif
+# dwipreproc mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif \
 #           -rpe_all \
 #           -eddy_options " --niter=8 --fwhm=10,6,4,2,0,0,0,0 --repol --ol_type=both " \
 #           -eddyqc_all ./eddy_output \
