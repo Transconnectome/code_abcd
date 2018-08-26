@@ -513,7 +513,7 @@ rm batch_abcd_*
 n_list=`wc ${list} | awk '{print $1}'`
 # n_split=$((n_list/119+1))
 n_split=$((24*32))
-split -l $n_split $CMD_batch batch_abcd
+split -l $n_split $CMD_batch batch_abcd_
 
 for b in `ls batch_abcd_*`
 do
