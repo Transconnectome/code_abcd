@@ -530,7 +530,7 @@ cat<<EOM > $launch_script
 #SBATCH -J nc_${b}          # Job name
 #%###SBATCH -o ./job/ABCD_a2.o%j       # Name of stdout output file
 #%###SBATCH -e ./job/ABCD_a2.e%j       # Name of stderr error file
-#SBATCH -p skx-large          # Queue (partition) name
+#SBATCH -p skx-normal          # Queue (partition) name
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 ######SBATCH -N 32                            # Total # of nodes
 #SBATCH -N ${number_of_nodes}
