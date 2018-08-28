@@ -122,18 +122,20 @@ sleep 0.1
 # -nocleanup -force
 #  sleep 0.1
 
-dwipreproc mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif \
-          -rpe_none \
-          -pe_dir PA \
-          -eddy_options " --niter=8 --fwhm=10,6,4,2,0,0,0,0 --repol --data_is_shelled --slm=linear " \
-          -eddyqc_all ./eddy_output \
-          -force -nthreads ${threads}
+# dwipreproc mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif \
+#           -rpe_none \
+#           -pe_dir PA \
+#           -eddy_options " --niter=8 --fwhm=10,6,4,2,0,0,0,0 --repol --data_is_shelled --slm=linear " \
+#           -eddyqc_all ./eddy_output \
+#           -force -nthreads ${threads}
 
 # dwipreproc mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif \
 #           -rpe_all \
 #           -eddy_options " --niter=8 --fwhm=10,6,4,2,0,0,0,0 --repol --ol_type=both " \
 #           -eddyqc_all ./eddy_output \
 #           -force -nthreads ${threads}
+
+cp mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif
 
   #pigz --fast -b 1280 -f mr_dwi_denoised_gibbs_preproc.mif
 ##########-readout_time 0.0691181 \#############??????????????????????????????\
@@ -167,8 +169,15 @@ sleep 0.1
 #%% 6. bias field correction (time: 0.5m)
 #if [ ! -e mr_dwi_denoised_gibbs_preproc_biasCorr.mif ]; then
      echo dwibiascorrect
-     time dwibiascorrect mr_dwi_denoised_gibbs_preproc.mif -force mr_dwi_denoised_gibbs_preproc_biasCorr.mif -ants \
-     -nthreads ${threads} -mask mr_meanb0_nonbiascorr_bet2_mask.nii.gz
+     # mrconvert mr_meanb0_nonbiascorr_bet2_mask.nii.gz mr_meanb0_nonbiascorr_bet2_mask.mif -force -nthreads ${threads}
+     # time dwibiascorrect mr_dwi_denoised_gibbs_preproc.mif -force mr_dwi_denoised_gibbs_preproc_biasCorr.mif -ants \
+     # -nthreads ${threads} -mask mr_meanb0_nonbiascorr_bet2_mask.mif
+
+     time dwibiascorrect mr_dwi_denoised_gibbs_preproc.mif -force \
+                  mr_dwi_denoised_gibbs_preproc_biasCorr.mif -ants \
+                  -nthreads ${threads} ]
+sleep 0.1
+
 sleep 0.1
 
             #pigz --fast -b 1280 -f mr_dwi_denoised_gibbs_preproc_biasCorr.mif
