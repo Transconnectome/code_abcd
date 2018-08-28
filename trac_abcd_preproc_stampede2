@@ -175,7 +175,7 @@ sleep 0.1
 
      time dwibiascorrect mr_dwi_denoised_gibbs_preproc.mif -force \
                   mr_dwi_denoised_gibbs_preproc_biasCorr.mif -ants \
-                  -nthreads ${threads} ]
+                  -nthreads ${threads}
 sleep 0.1
 
 sleep 0.1
