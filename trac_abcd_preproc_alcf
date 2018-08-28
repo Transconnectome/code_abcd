@@ -39,7 +39,7 @@ cat<<EOA >$CMD_batch
 #!/bin/bash
 #COBALT -t 24:00:00
 #COBALT -n $N
-#COBALT --attrs mcdram=cache:numa=quad:ssds=required:ssd_size=32
+#COBALT --attrs mcdram=cache:numa=quad:ssds=required:ssd_size=64
 #COBALT -A Child_Connectome
 #COBLAT -M jiook.cha@nyspi.columbia.edu
 
