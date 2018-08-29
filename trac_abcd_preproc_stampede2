@@ -551,7 +551,7 @@ cat<<EOM > $launch_script
 ######SBATCH -N 32                            # Total # of nodes
 #SBATCH -N 1970
 #SBATCH --ntasks-per-node 1            # Total # of mpi tasks
-#SBATCH -t 48:00:00        # Run time (hh:mm:ss)
+#SBATCH -t 8:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
 #SBATCH --mail-type=all    # Send email at begin and end of job
 #SBATCH -A TG-IBN180001
@@ -571,5 +571,5 @@ export LAUNCHER_JOB_FILE=`echo $b`
 \$LAUNCHER_DIR/paramrun
 EOM
 
-echo sbatch $launch_script
+sbatch $launch_script
 done
