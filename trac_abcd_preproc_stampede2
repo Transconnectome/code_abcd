@@ -366,16 +366,16 @@ sleep 0.1
 #            -voxels response_voxels.mif -force -nthreads 256
 #fi
 
-time dwi2response dhollander mr_dwi_preproc_repol_biasCorr_upsample125.mif \
+time dwi2response dhollander mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.mif \
             response_wm.txt response_gm.txt response_csf.txt \
-            -voxels response_voxels.mif -force -nthreads ${threads} -mask mr_dwi_preproc_repol_biasCorr_upsample125_bet2.nii.gz
+            -voxels response_voxels.mif -force -nthreads ${threads} -mask mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125_bet2.nii.gz
 #%% FOD%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ### FOD estimation (time: 3m)
 #if [ ! -e WM_FODs_upsample125.mif ];then
    echo dwi2fod
 
    ### DWI2FOD only for 2 Tissue Types (except for GM-because it's single shell)
-   time dwi2fod msmt_csd mr_dwi_preproc_repol_biasCorr_upsample125.mif \
+   time dwi2fod msmt_csd mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.mif \
             response_wm.txt \
             WM_FODs_upsample125.mif \
              response_csf.txt csf.mif \
@@ -394,8 +394,8 @@ time mtnormalise WM_FODs_upsample125.mif WM_FODs_upsample125_norm.mif \
               -mask mr_meanb0_bet_mask_upsample125.nii.gz \
               -nthreads ${threads} -force
 
-mrconvert mr_dwi_preproc_repol_biasCorr_upsample125.mif \
-      mmr_dwi_preproc_repol_biasCorr_upsample125.nii.gz \
+mrconvert mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.mif \
+      mmr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.nii.gz \
       -force -nthreads ${threads}
 
 mrconvert mr_dilate_mask_upsample125.mif mr_dilate_mask_upsample125.nii.gz \
@@ -404,7 +404,7 @@ mrconvert mr_dilate_mask_upsample125.mif mr_dilate_mask_upsample125.nii.gz \
 #dtifit -k mr_dwi_denoised_gibbs_crop_preproc_biasCorr_upsample125.nii.gz -o dtifit \
 #    -m mr_meanb0_bet_mask_upsample125.nii.gz -r dti.bvec -b dti.bval -V
 
-dwi2tensor mr_dwi_preproc_repol_biasCorr_upsample125.mif \
+dwi2tensor mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.mif \
     -mask mr_meanb0_bet_mask_upsample125.nii.gz mr_tensor.mif \
     -force -nthreads ${threads}
 
