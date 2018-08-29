@@ -526,9 +526,9 @@ done
 
 rm batch_abcd_*
 n_list=`wc ${list} | awk '{print $1}'`
-# n_split=$((n_list/119+1))
-# n_split=$((16*64))
-n_split=1971
+# n_split=$((n_list/256+1))
+n_split=$((256))
+# n_split=1971
 split -l $n_split $CMD_batch batch_abcd_
 
 for b in `ls batch_abcd_*`
@@ -536,9 +536,9 @@ do
 launch_script=${ABCD_job}/script_${b}
 
 n_line=`wc -l $b | awk '{print $1}'`
-echo n_line is ${n_line}
-number_of_nodes=`echo $((n_line / 16)) | bc`
-echo number_of_nodes are ${number_of_nodes}
+# echo n_line is ${n_line}
+# number_of_nodes=`echo $((n_line / 16)) | bc`
+# echo number_of_nodes are ${number_of_nodes}
 
 
 cat<<EOM > $launch_script
@@ -547,9 +547,9 @@ cat<<EOM > $launch_script
 #%###SBATCH -o ./job/ABCD_a2.o%j       # Name of stdout output file
 #%###SBATCH -e ./job/ABCD_a2.e%j       # Name of stderr error file
 #SBATCH -p large          # Queue (partition) name
-######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
+#SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 ######SBATCH -N 32                            # Total # of nodes
-#SBATCH -N 1970
+######SBATCH -N 1970
 #SBATCH --ntasks-per-node 1            # Total # of mpi tasks
 #SBATCH -t 8:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
