@@ -275,7 +275,7 @@ flirt -in brain -ref mr_meanb0_bet -out brain2diff_flt_dof6 -omat brain2diff_dof
 sleep 0.1
 
 #2. ants nonlinear warping
-$code/antswarp brain2diff_flt_dof6 mr_meanb0_bet
+/scratch/03263/jcha9928/code/antswarp brain2diff_flt_dof6 mr_meanb0_bet
 sleep 0.1
 
 #3. 5ttgen
