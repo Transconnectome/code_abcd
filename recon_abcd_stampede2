@@ -18,11 +18,16 @@ i=1
 for s in `cat $ABCD_code/$list`
 do
 #s=`echo $SUBJECT | egrep -o '[0-9]{8}'`
+T1name=`echo $s | cut -d"." -f1`
+SUBJECT=`echo $T1name | cut -d"_" -f1`
+DATA_source=$ABCD/data/${s}
+DATA_target=$ABCD/fs
 
-  CMD=$ABCD_job/fs.stampede2.${s}
+
+  CMD=$ABCD_job/fs.stampede2.${T1name}
   rm -rf $CMD
 
-  LOG=$ABCD_job/log.fs.stampede2.${s}
+  LOG=$ABCD_job/log.fs.stampede2.${T1name}
   rm -rf $LOG
 
 #  subject=`echo $s | cut -d "_" -f1`
@@ -37,10 +42,7 @@ do
 #echo $T1w
 
 #echo ${SUBJECT}
-T1name=`echo $s | cut -d"." -f1`
-SUBJECT=`echo $T1name | cut -d"_" -f1`
-DATA_source=$ABCD/data/${s}
-DATA_target=$ABCD/fs
+
 
 cat<<EOC >$CMD
 #!/bin/bash
