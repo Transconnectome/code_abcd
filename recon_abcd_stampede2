@@ -37,25 +37,23 @@ do
 #echo $T1w
 
 #echo ${SUBJECT}
+T1name=`echo $s | cut -d"." -f1`
+SUBJECT=`echo $T1name | cut -d"_" -f1`
+DATA_source=$ABCD/data/${s}
+DATA_target=$ABCD/fs
 
 cat<<EOC >$CMD
 #!/bin/bash
 source ~/.bashrc
-#DATA_source=$ABCD/data/${s}
-DATA_target=$ABCD/fs
+
 
 tar -xzvf ${s} -C /tmp
 
-T1name=`echo $s | cut -d"." -f1`
-SUBJECT=`echo \$T1name | cut -d"_" -f1`
 
-T1w=\`find /tmp/*\$SUBJECT -name "*_T1w.nii" | head -n 1\`
 
-#workingdir=/tmp/${s}/
-#mkdir -p \${workingdir}
-#cd \${workingdir}
-#echo current directory is \`pwd\`
-rm -rf /tmp/\${SUBJECT}/
+T1w=\`find /tmp/*$SUBJECT -name "*_T1w.nii" | head -n 1\`
+
+rm -rf /tmp/${SUBJECT}/
 
 ################################################################################
 ################################## freesurfer ##############
@@ -68,8 +66,8 @@ sleep $[ ( $RANDOM % 10 )  + 1 ]s
 
 recon-all -sd /tmp \
           -all \
-          -s \${T1name} \
-          -i \${T1w} \
+          -s ${T1name} \
+          -i ${T1w} \
           -qcache
 
 # recon-all -sd /tmp \
@@ -85,13 +83,13 @@ recon-all -sd /tmp \
 
 echo "I THINK EVERYTHING IS DONE BY NOW"
 
-cp -frv /tmp/\${T1name} \${DATA_target}
+cp -frv /tmp/${T1name} ${DATA_target}
 
 EOC
 
 ################################################## END OF CMD##########################################################
 chmod +x $CMD
-echo "$CMD > ./job/fs_output_subject_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1 " >> $CMD_batch
+echo "$CMD > ./job/fs_output_subject_${T1name}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1 " >> $CMD_batch
 
 done
 
@@ -108,7 +106,7 @@ launch_script=${ABCD_job}/script_${b}
 
 cat<<EOM > $launch_script
 #!/bin/bash
-#SBATCH -J nc_${b}          # Job name
+#SBATCH -J abcd_${b}          # Job name
 #%###SBATCH -o ./job/ABCD_a2.o%j       # Name of stdout output file
 #%###SBATCH -e ./job/ABCD_a2.e%j       # Name of stderr error file
 #SBATCH -p skx-normal          # Queue (partition) name
