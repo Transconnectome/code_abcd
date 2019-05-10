@@ -34,7 +34,7 @@ do
 # T1w=/scratch/03263/jcha9928/data/ABCD/T1/T1_${s}.nii.gz
 # T1w=`find /scratch/03263/jcha9928/data/ABCD/T1_raw/ -name "*${s}*.nii" | head -n 1`
 
-echo $T1w
+#echo $T1w
 
 #echo ${SUBJECT}
 
@@ -42,7 +42,7 @@ cat<<EOC >$CMD
 #!/bin/bash
 source ~/.bashrc
 #DATA_source=$ABCD/data/${s}
-#DATA_target=$ABCD/fs
+DATA_target=$ABCD/fs
 
 tar -xzvf ${s} -C /tmp
 
@@ -68,8 +68,8 @@ sleep $[ ( $RANDOM % 10 )  + 1 ]s
 
 recon-all -sd /tmp \
           -all \
-          -s ${T1name} \
-          -i ${T1w} \
+          -s \${T1name} \
+          -i \${T1w} \
           -qcache
 
 # recon-all -sd /tmp \
@@ -85,7 +85,7 @@ recon-all -sd /tmp \
 
 echo "I THINK EVERYTHING IS DONE BY NOW"
 
-cp -frv /tmp/${s} \${DATA_target}
+cp -frv /tmp/\${T1name} \${DATA_target}
 
 EOC
 
