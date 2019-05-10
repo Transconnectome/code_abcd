@@ -49,9 +49,7 @@ cat<<EOC >$CMD
 source ~/.bashrc
 
 
-tar -xzvf ${s} -C /tmp
-
-
+tar -xzvf $ABCD/data_T1_release2_201905/${s} -C /tmp
 
 T1w=\`find /tmp/*$SUBJECT -name "*_T1w.nii" | head -n 1\`
 
@@ -69,7 +67,7 @@ sleep $[ ( $RANDOM % 10 )  + 1 ]s
 recon-all -sd /tmp \
           -all \
           -s ${T1name} \
-          -i ${T1w} \
+          -i \${T1w} \
           -qcache
 
 # recon-all -sd /tmp \
