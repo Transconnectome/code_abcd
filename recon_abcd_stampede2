@@ -1,0 +1,143 @@
+#!/bin/bash
+
+list=$1
+N=`wc ${1} | awk '{print $1}'`
+threads=96
+#threadsX2=$((${threads}*2))
+
+ABCD=/scratch/03263/jcha9928/data/ABCD/
+ABCD_code=$ABCD/code_abcd
+ABCD_job=$ABCD_code/job
+#DATA_target=$STERN/image03/dwi_eddy
+
+CMD_batch=$ABCD_code/cmd.ABCD.batch.fs.${list}
+rm -rf $CMD_batch
+
+
+i=1
+for s in `cat $ABCD_code/$list`
+do
+#s=`echo $SUBJECT | egrep -o '[0-9]{8}'`
+
+  CMD=$ABCD_job/fs.stampede2.${s}
+  rm -rf $CMD
+
+  LOG=$ABCD_job/log.fs.stampede2.${s}
+  rm -rf $LOG
+
+#  subject=`echo $s | cut -d "_" -f1`
+#  sess=`echo $s | cut -d "_" -f2`
+
+#CMD_sub=/lus/theta-fs0/projects/AD_Brain_Imaging/anal/HBN/code_hbn_alcf/job/cmd2_sub.trac.${s}
+#rm -rf $CMD_sub
+# T1w=`find /scratch/03263/jcha9928/data/ABCD/T1/${s} -name "*T1w.nii.gz" | head -n 1`
+# T1w=/scratch/03263/jcha9928/data/ABCD/T1/T1_${s}.nii.gz
+# T1w=`find /scratch/03263/jcha9928/data/ABCD/T1_raw/ -name "*${s}*.nii" | head -n 1`
+
+echo $T1w
+
+#echo ${SUBJECT}
+
+cat<<EOC >$CMD
+#!/bin/bash
+source ~/.bashrc
+#DATA_source=$ABCD/data/${s}
+#DATA_target=$ABCD/fs
+
+tar -xzvf ${s} -C /tmp
+
+T1name=`echo $s | cut -d"." -f1`
+SUBJECT=`echo \$T1name | cut -d"_" -f1`
+
+T1w=`find /tmp/*\$SUBJECT -name "*_T1w.nii" | head -n 1`
+
+#workingdir=/tmp/${s}/
+#mkdir -p \${workingdir}
+#cd \${workingdir}
+#echo current directory is \`pwd\`
+rm -rf /tmp/\${SUBJECT}/
+
+################################################################################
+################################## freesurfer ##############
+################################################################################
+################################################################################
+
+# cp -frv \${DATA_target}/${s} /tmp
+
+sleep $[ ( $RANDOM % 10 )  + 1 ]s
+
+recon-all -sd /tmp \
+          -all \
+          -s ${T1name} \
+          -i ${T1w} \
+          -qcache
+
+# recon-all -sd /tmp \
+#           -make all \
+#           -s ${s} \
+#           -no-isrunning
+
+
+################################################################################
+################################################################################
+################################################################################
+
+
+echo "I THINK EVERYTHING IS DONE BY NOW"
+
+cp -frv /tmp/${s} \${DATA_target}
+
+EOC
+
+################################################## END OF CMD##########################################################
+chmod +x $CMD
+echo "$CMD > ./job/fs_output_subject_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1 " >> $CMD_batch
+
+done
+
+### batch submission############################################################
+rm batch_fs_*
+n_list=`wc ${list} | awk '{print $1}'`
+# n_split=$((n_list/119+1))
+n_split=$((48*31))
+split -l $n_split $CMD_batch batch_fs_
+
+for b in `ls batch_fs_*`
+do
+launch_script=${ABCD_job}/script_${b}
+
+cat<<EOM > $launch_script
+#!/bin/bash
+#SBATCH -J nc_${b}          # Job name
+#%###SBATCH -o ./job/ABCD_a2.o%j       # Name of stdout output file
+#%###SBATCH -e ./job/ABCD_a2.e%j       # Name of stderr error file
+#SBATCH -p skx-normal          # Queue (partition) name
+######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
+#SBATCH -N 31                            # Total # of nodes
+#SBATCH --ntasks-per-node 48            # Total # of mpi tasks
+#SBATCH -t 48:00:00        # Run time (hh:mm:ss)
+#SBATCH --mail-user=cha.jiook@gmail.com
+#SBATCH --mail-type=all    # Send email at begin and end of job
+#SBATCH -A TG-IBN180001
+
+# Other commands must follow all #SBATCH directives...
+module list
+pwd
+date
+module load launcher
+sleep 3
+
+export LAUNCHER_PLUGIN_DIR=\$LAUNCHER_DIR/plugins
+export LAUNCHER_RMI=SLURM
+export LAUNCHER_JOB_FILE=`echo $b`
+
+# Launch MPI code...
+\$LAUNCHER_DIR/paramrun
+
+# module load parallel
+# cat $b | parallel -j 96 "{}"
+
+EOM
+
+echo sbatch $launch_script
+done
