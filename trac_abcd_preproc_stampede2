@@ -19,16 +19,16 @@ for s in `cat $ABCD_code/$list`
 do
 #s=`echo $SUBJECT | egrep -o '[0-9]{8}'`
 
-  CMD=$ABCD_job/alltckgen.alcf.${s}
+  CMD=$ABCD_job/alltckgen.stampede.${s}
   rm -rf $CMD
 
-  LOG=$ABCD_job/log.alltckgen.alcf.${s}
+  LOG=$ABCD_job/log.alltckgen.stampede.${s}
   rm -rf $LOG
 
   subject=`echo $s | cut -d "_" -f1`
   sess=`echo $s | cut -d "_" -f2`
 
-#CMD_sub=$ABCD/code_hbn_alcf/job/cmd2_sub.trac.${s}
+#CMD_sub=$ABCD/code_hbn_stampede/job/cmd2_sub.trac.${s}
 #rm -rf $CMD_sub
 
 
@@ -60,24 +60,52 @@ echo current directory is \`pwd\`
 #cp /ifs/scratch/pimri/posnerlab/1anal/adni/data/nii/${s}_*DTI.bval_tp ./dti.bval_tp
 
 dwi_folder=$ABCD/data/${s}/ses-baselineYear1Arm1/dwi/
-mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-01_dwi.nii \
-          ./dwi_run-01.mif \
-          -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-01_dwi.json \
-          -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-01_dwi.bvec \
-          \$dwi_folder/${s}_ses-baselineYear1Arm1_run-01_dwi.bval \
+
+num_of_dwi=`ls -l *nii | egrep -c '^-'`
+
+if [ $num_of_dwi -gt 1 ]; then
+
+echo multiple
+
+mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.nii \
+          ./dwi_run.mif \
+          -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.json \
+          -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.bvec \
+          \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.bval \
           -force -nthreads ${threads}
 
-if [ -e \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii ]; then
-mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii \
-          ./dwi_run-02.mif \
-          -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.json \
-          -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.bvec \
-          \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.bval \
-          -force -nthreads ${threads}
-mrcat ./dwi_run-01.mif ./dwi_run-02.mif ./mr_dwi.mif -force -nthreads ${threads}
 
-else cp ./dwi_run-01.mif ./mr_dwi.mif
+else echo single;
+
+  for i in 1 2
+  do
+
+  mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.nii \
+        ./dwi_run0${i}.mif \
+        -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.json \
+        -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.bvec \
+        \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.bval \
+        -force -nthreads ${threads}
+
+  done
+
+mrcat ./dwi_run01.mif ./dwi_run02.mif ./dwi_run.mif
 fi
+
+# if [ -e \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii ]; then
+# mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii \
+#           ./dwi_run-02.mif \
+#           -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.json \
+#           -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.bvec \
+#           \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.bval \
+#           -force -nthreads ${threads}
+# mrcat ./dwi_run-01.mif ./dwi_run-02.mif ./mr_dwi.mif -force -nthreads ${threads}
+#
+# else cp ./dwi_run-01.mif ./mr_dwi.mif
+# fi
+
+fi
+
 
 # 2. denoising (time:1m)
     echo dwidenoise
@@ -420,7 +448,7 @@ tensor2metric mr_tensor.mif -rd mr_DTI_RD.mif -force -nthreads ${threads}
 ###########################################(2.5 Min for 1M)#####################
 ###########################################(60 Min for 20M)#####################
 
-###tckgen and connectome (time to 1M for tckgen = 5.5m "ALCF-Theta");
+###tckgen and connectome (time to 1M for tckgen = 5.5m "stampede-Theta");
 ###                      (time to 1M for tckgen = 2.5m "TACC-Stampede2-SKX")
 
 time tckgen WM_FODs_upsample125_norm.mif mr_track_20M.tck \
