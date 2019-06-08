@@ -83,24 +83,23 @@ if [ $num_of_dwi -gt 1 ]; then
 
     for i in 1 2
     do
-      mrconvert *run-0${i}_dwi.nii $ABCD/fs/$t1/dwi/dwi_run-0${i}.mif \
-              -json_import *run-0${i}_dwi.json \
-              -fslgrad     *run-0${i}_dwi.bvec \
-                           *run-0${i}_dwi.bval \
-              -force -nthreads ${threads}
+        mrconvert *run-0${i}_dwi.nii $ABCD/fs/$t1/dwi/dwi_run-0${i}.mif \
+                -json_import *run-0${i}_dwi.json \
+                -fslgrad     *run-0${i}_dwi.bvec \
+                             *run-0${i}_dwi.bval \
+                -force -nthreads ${threads}
     done
 
     cd $ABCD/fs/$t1/dwi
 
     mrcat dwi_run-01.mif dwi_run-02.mif dwi.mif
 
-    # mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.nii \
-    #           ./dwi_run.mif \
-    #           -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.json \
-    #           -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.bvec \
-    #           \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.bval \
-    #           -force -nthreads ${threads}
-
+                  # mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.nii \
+                  #           ./dwi_run.mif \
+                  #           -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.json \
+                  #           -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.bvec \
+                  #           \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.bval \
+                  #           -force -nthreads ${threads}
 
     else echo single;
 
@@ -116,32 +115,32 @@ if [ $num_of_dwi -gt 1 ]; then
                          *run-0*_dwi.bval \
             -force -nthreads ${threads}
 
-    # for i in 1 2
-    # do
-    #
-    # mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.nii \
-    #       ./dwi_run0${i}.mif \
-    #       -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.json \
-    #       -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.bvec \
-    #       \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.bval \
-    #       -force -nthreads ${threads}
-    #
-    # done
-    #mrcat ./dwi_run01.mif ./dwi_run02.mif ./dwi_run.mif
+                # for i in 1 2
+                # do
+                #
+                # mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.nii \
+                #       ./dwi_run0${i}.mif \
+                #       -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.json \
+                #       -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.bvec \
+                #       \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.bval \
+                #       -force -nthreads ${threads}
+                #
+                # done
+                # mrcat ./dwi_run01.mif ./dwi_run02.mif ./dwi_run.mif
 
 fi
 
-# if [ -e \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii ]; then
-# mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii \
-#           ./dwi_run-02.mif \
-#           -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.json \
-#           -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.bvec \
-#           \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.bval \
-#           -force -nthreads ${threads}
-# mrcat ./dwi_run-01.mif ./dwi_run-02.mif ./mr_dwi.mif -force -nthreads ${threads}
-#
-# else cp ./dwi_run-01.mif ./mr_dwi.mif
-# fi
+                # if [ -e \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii ]; then
+                # mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii \
+                #           ./dwi_run-02.mif \
+                #           -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.json \
+                #           -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.bvec \
+                #           \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.bval \
+                #           -force -nthreads ${threads}
+                # mrcat ./dwi_run-01.mif ./dwi_run-02.mif ./mr_dwi.mif -force -nthreads ${threads}
+                #
+                # else cp ./dwi_run-01.mif ./mr_dwi.mif
+                # fi
 
 
 
