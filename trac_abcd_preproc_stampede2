@@ -59,37 +59,76 @@ echo current directory is \`pwd\`
 #cp /ifs/scratch/pimri/posnerlab/1anal/adni/data/nii/${s}_*DTI.bvec_tp ./dti.bvec_tp
 #cp /ifs/scratch/pimri/posnerlab/1anal/adni/data/nii/${s}_*DTI.bval_tp ./dti.bval_tp
 
-dwi_folder=$ABCD/data/${s}/ses-baselineYear1Arm1/dwi/
+#dwi_folder=$ABCD/data/${s}/ses-baselineYear1Arm1/dwi/
 
-num_of_dwi=`ls -l *nii | egrep -c '^-'`
+dwi_folder=$ABCD/data_DTI_release2_201905
+
+cd $dwi_folder
+
+t1=`echo $s|cut -d"." -f1`
+subjid=`echo $t1 | cut -d"_" -f1`
+mkdir -p $ABCD/fs/$t1/dwi
+
+#dti=`echo $s | sed "s/T1/DTI/g"`
+
+num_of_dwi=`ls -l $subjid* | egrep -c '^-'`
 
 if [ $num_of_dwi -gt 1 ]; then
 
-echo multiple
+    echo "multiple dti"
 
-mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.nii \
-          ./dwi_run.mif \
-          -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.json \
-          -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.bvec \
-          \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.bval \
-          -force -nthreads ${threads}
+    for file in `echo $subjid*`;do tar -xvf $file -C /tmp;done
+
+    cd /tmp/sub-$subjid/ses-baselineYear1Arm1/dwi/
+
+    for i in 1 2
+    do
+      mrconvert *run-0${i}_dwi.nii $ABCD/fs/$t1/dwi/dwi_run-0${i}.mif \
+              -json_import *run-0${i}_dwi.json \
+              -fslgrad     *run-0${i}_dwi.bvec \
+                           *run-0${i}_dwi.bval \
+              -force -nthreads ${threads}
+    done
+
+    cd $ABCD/fs/$t1/dwi
+
+    mrcat dwi_run-01.mif dwi_run-02.mif dwi.mif
+
+    # mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.nii \
+    #           ./dwi_run.mif \
+    #           -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.json \
+    #           -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.bvec \
+    #           \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.bval \
+    #           -force -nthreads ${threads}
 
 
-else echo single;
+    else echo single;
 
-  for i in 1 2
-  do
+    cd $dwi_folder
 
-  mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.nii \
-        ./dwi_run0${i}.mif \
-        -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.json \
-        -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.bvec \
-        \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.bval \
-        -force -nthreads ${threads}
+    tar -xvf $subjid* -C /tmp
 
-  done
+    cd /tmp/sub-$subjid/ses-baselineYear1Arm1/dwi/
 
-mrcat ./dwi_run01.mif ./dwi_run02.mif ./dwi_run.mif
+    mrconvert *run-0*_dwi.nii $ABCD/fs/$t1/dwi/dwi.mif \
+            -json_import *run-0*_dwi.json \
+            -fslgrad     *run-0*_dwi.bvec \
+                         *run-0*_dwi.bval \
+            -force -nthreads ${threads}
+
+    # for i in 1 2
+    # do
+    #
+    # mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.nii \
+    #       ./dwi_run0${i}.mif \
+    #       -json_import \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.json \
+    #       -fslgrad \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.bvec \
+    #       \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0${i}_dwi.bval \
+    #       -force -nthreads ${threads}
+    #
+    # done
+    #mrcat ./dwi_run01.mif ./dwi_run02.mif ./dwi_run.mif
+
 fi
 
 # if [ -e \$dwi_folder/${s}_ses-baselineYear1Arm1_run-02_dwi.nii ]; then
@@ -104,7 +143,7 @@ fi
 # else cp ./dwi_run-01.mif ./mr_dwi.mif
 # fi
 
-fi
+
 
 
 # 2. denoising (time:1m)
