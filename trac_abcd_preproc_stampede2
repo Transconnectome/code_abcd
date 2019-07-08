@@ -19,10 +19,10 @@ for s in `cat $ABCD_code/$list`
 do
 #s=`echo $SUBJECT | egrep -o '[0-9]{8}'`
 
-  CMD=$ABCD_job/alltckgen.alcf.${s}
+  CMD=$ABCD_job/preproc.cmd.alcf.${s}
   rm -rf $CMD
 
-  LOG=$ABCD_job/log.alltckgen.alcf.${s}
+  LOG=$ABCD_job/preproc.log.alcf.${s}
   rm -rf $LOG
 
   subject=`echo $s | cut -d "_" -f1`
