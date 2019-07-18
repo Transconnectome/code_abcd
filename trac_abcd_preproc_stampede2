@@ -430,26 +430,35 @@ sleep 0.1
 #%% 9. dwi2response-subject level %%%%%%%%%%%  (time: 10m)
 #if [ ! -e response_wm.txt ]; then
     echo dwi2response
-#    time dwi2response msmt_5tt mr_dwi_denoised_gibbs_crop_preproc_biasCorr.mif 5tt_freesurfer2diff.nii.gz \
-#            response_wm.txt response_gm.txt response_csf.txt \
-#            -voxels response_voxels.mif -force -nthreads 256
+    time dwi2response msmt_5tt mr_dwi_denoised_gibbs_crop_preproc_biasCorr.mif 5tt_freesurfer2diff.nii.gz \
+            response_wm.txt response_gm.txt response_csf.txt \
+            -voxels response_voxels.mif -force -nthreads ${threads}
 #fi
 
-time dwi2response dhollander mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif \
-            response_wm.txt response_gm.txt response_csf.txt \
-            -voxels response_voxels.mif -force -nthreads ${threads} -mask mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100_bet2.nii.gz
+#time dwi2response dhollander mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif \
+#            response_wm.txt response_gm.txt response_csf.txt \
+#            -voxels response_voxels.mif -force -nthreads ${threads} -mask mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100_bet2.nii.gz
 #%% FOD%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ### FOD estimation (time: 3m)
 #if [ ! -e WM_FODs_upsample100.mif ];then
    echo dwi2fod
 
    ### DWI2FOD only for 2 Tissue Types (except for GM-because it's single shell)
+#   time dwi2fod msmt_csd mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif \
+#            response_wm.txt \
+#            WM_FODs_upsample100.mif \
+#             response_csf.txt csf.mif \
+#            -mask mr_meanb0_bet_mask_upsample100.nii.gz \
+#            -force -nthreads ${threads}
+
    time dwi2fod msmt_csd mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif \
-            response_wm.txt \
-            WM_FODs_upsample100.mif \
-             response_csf.txt csf.mif \
-            -mask mr_meanb0_bet_mask_upsample100.nii.gz \
+            response_wm.txt WM_FODs_upsample100.mif \
+             response_gm.txt gm.mif \
+	     response_csf.txt csf.mif \
+	     -mask mr_meanb0_bet_mask_upsample100.nii.gz \
             -force -nthreads ${threads}
+
+
 #fi
 #if [ ! -e tissueRGB.mif ]; then
    mrconvert WM_FODs_upsample100.mif - -coord 3 0 -nthreads ${threads} -quiet | \
