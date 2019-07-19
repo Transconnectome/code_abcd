@@ -66,7 +66,7 @@ dwi_folder=$ABCD/data_DTI_release2_201905
 cd \$dwi_folder
 
 t1=`echo $s|cut -d"." -f1`
-subjid=`echo \$t1 | cut -d"_" -f1`
+subjid=`echo $t1 | cut -d"_" -f1`
 mkdir -p $ABCD/fs/\$t1/dwi
 
 #dti=`echo $s | sed "s/T1/DTI/g"`
