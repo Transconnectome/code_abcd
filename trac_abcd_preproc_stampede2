@@ -63,7 +63,7 @@ echo current directory is \`pwd\`
 
 dwi_folder=$ABCD/data_DTI_release2_201905
 
-cd $dwi_folder
+cd \$dwi_folder
 
 t1=`echo $s|cut -d"." -f1`
 subjid=`echo \$t1 | cut -d"_" -f1`
@@ -103,7 +103,7 @@ if [ $num_of_dwi -gt 1 ]; then
 
     else echo single;
 
-    cd $dwi_folder
+    cd \$dwi_folder
 
     tar -xvf $subjid* -C /tmp
 
