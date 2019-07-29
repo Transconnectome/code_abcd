@@ -71,11 +71,13 @@ mkdir -p $ABCD/fs/\$t1/dwi
 
 #dti=`echo $s | sed "s/T1/DTI/g"`
 
+##### number of dwi runs (supposedly two, but some may have only one run)#######
 #num_of_dwi=`ls -l \$dwi_folder/\${subjid}* | egrep -c '^-'`
 #echo "ls -l \$dwi_folder/\${subjid}* | egrep -c '^-' "
-num_of_dwi=`find \$dwi_folder -type f | wc -l `
-echo num_of_dwi is $num_of_dwi
 
+num_of_dwi=`find \$dwi_folder -type f -name \${subjid}* | wc -l `
+echo num_of_dwi is \$num_of_dwi
+################################################################################
 
 if [ \$num_of_dwi -gt 1 ]; then
 
