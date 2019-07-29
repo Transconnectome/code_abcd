@@ -71,7 +71,7 @@ mkdir -p $ABCD/fs/\$t1/dwi
 
 #dti=`echo $s | sed "s/T1/DTI/g"`
 
-num_of_dwi=`ls -l \${subjid}* | egrep -c '^-'`
+num_of_dwi=`ls -l $dwi_folder\${subjid}* | egrep -c '^-'`
 
 if [ $num_of_dwi -gt 1 ]; then
 
