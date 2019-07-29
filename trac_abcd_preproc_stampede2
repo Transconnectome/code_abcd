@@ -19,10 +19,10 @@ for s in `cat $ABCD_code/$list`
 do
 #s=`echo $SUBJECT | egrep -o '[0-9]{8}'`
 
-  CMD=$ABCD_job/preproc.cmd.alcf.${s}
+  CMD=$ABCD_job/preproc.cmd.stampede2.${s}
   rm -rf $CMD
 
-  LOG=$ABCD_job/preproc.log.alcf.${s}
+  LOG=$ABCD_job/preproc.log.stampede2.${s}
   rm -rf $LOG
 
   subject=`echo $s | cut -d "_" -f1`
@@ -71,7 +71,7 @@ mkdir -p $ABCD/fs/\$t1/dwi
 
 #dti=`echo $s | sed "s/T1/DTI/g"`
 
-num_of_dwi=`ls -l $dwi_folder\${subjid}* | egrep -c '^-'`
+num_of_dwi=`ls -l \$dwi_folder\${subjid}* | egrep -c '^-'`
 
 if [ $num_of_dwi -gt 1 ]; then
 
