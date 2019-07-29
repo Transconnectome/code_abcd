@@ -84,7 +84,7 @@ if [ \$num_of_dwi -gt 1 ]; then
 
     echo "multiple dti"
 
-    for file in `echo \$subjid*`;do tar -xvf $file -C /tmp;done
+    for file in `ls \${subjid}*`;do tar -xvf $file -C /tmp;done
 
     cd /tmp/sub-\$subjid/ses-baselineYear1Arm1/dwi/
 
