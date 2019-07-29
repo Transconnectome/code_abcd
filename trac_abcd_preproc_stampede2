@@ -76,7 +76,8 @@ mkdir -p $ABCD/fs/\$t1/dwi
 #echo "ls -l \$dwi_folder/\${subjid}* | egrep -c '^-' "
 
 num_of_dwi=`find \$dwi_folder -type f -name \${subjid}* | wc -l `
-echo num_of_dwi is \$num_of_dwi
+echo "num_of_dwi is \$num_of_dwi"
+
 ################################################################################
 
 if [ \$num_of_dwi -gt 1 ]; then
