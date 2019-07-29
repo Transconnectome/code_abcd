@@ -158,48 +158,48 @@ $ABCD/fs/$t1/dwi
 sleep 0.1
 
     #pigz --fast -b 1280 -force mr_dwi_denoised_gibbs.mif
-#fi
-# # 4. dwipreproc -eddy current (time:33m)
-# #if [ ! -e mr_dwi_denoised_gibbs_preproc.mif ];then
-#     mrcat dwi_fmap_AP.nii.gz dwi_fmap_PA.nii.gz b0s.mif -force -axis 3 -nthreads ${threads}
-#     #pigz --fast -b 1280 -force b0s.mif
-#
-#     dim2=\`mrinfo mr_dwi_denoised_gibbs.mif | grep "x 81 x"\`
-#     str=\${dim2}str
-#     if [ "\${str}" = str ];then echo "##########nocropping needed###########"
-# 		cp b0s.mif b0s_crop.mif
-# 		cp mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_crop.mif
-#     else mrcrop b0s.mif b0s_crop.mif -axis 2 1 80 -force -quiet -nthreads ${threads}
-# sleep 0.1
-#
-#          mrcrop mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_crop.mif -axis 2 1 80 -nthreads ${threads}
-# sleep 0.1
-#
-#     fi
-#
-#     time dwipreproc mr_dwi_denoised_gibbs_crop.mif mr_dwi_denoised_gibbs_preproc.mif \
-# -json_import dti.json \
-# -se_epi b0s_crop.mif \
-# -pe_dir AP \
-# -rpe_pair \
-# -fslgrad dti.bvec dti.bval \
-# -eddy_options " --repol " \
-# -nthreads ${threads} \
-# -nocleanup -force
-#  sleep 0.1
+      #fi
+      # # 4. dwipreproc -eddy current (time:33m)
+      # #if [ ! -e mr_dwi_denoised_gibbs_preproc.mif ];then
+      #     mrcat dwi_fmap_AP.nii.gz dwi_fmap_PA.nii.gz b0s.mif -force -axis 3 -nthreads ${threads}
+      #     #pigz --fast -b 1280 -force b0s.mif
+      #
+      #     dim2=\`mrinfo mr_dwi_denoised_gibbs.mif | grep "x 81 x"\`
+      #     str=\${dim2}str
+      #     if [ "\${str}" = str ];then echo "##########nocropping needed###########"
+      # 		cp b0s.mif b0s_crop.mif
+      # 		cp mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_crop.mif
+      #     else mrcrop b0s.mif b0s_crop.mif -axis 2 1 80 -force -quiet -nthreads ${threads}
+      # sleep 0.1
+      #
+      #          mrcrop mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_crop.mif -axis 2 1 80 -nthreads ${threads}
+      # sleep 0.1
+      #
+      #     fi
+      #
+      #     time dwipreproc mr_dwi_denoised_gibbs_crop.mif mr_dwi_denoised_gibbs_preproc.mif \
+      # -json_import dti.json \
+      # -se_epi b0s_crop.mif \
+      # -pe_dir AP \
+      # -rpe_pair \
+      # -fslgrad dti.bvec dti.bval \
+      # -eddy_options " --repol " \
+      # -nthreads ${threads} \
+      # -nocleanup -force
+      #  sleep 0.1
 
-# dwipreproc mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif \
-#           -rpe_none \
-#           -pe_dir PA \
-#           -eddy_options " --niter=8 --fwhm=10,6,4,2,0,0,0,0 --repol --data_is_shelled --slm=linear " \
-#           -eddyqc_all ./eddy_output \
-#           -force -nthreads ${threads}
+      # dwipreproc mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif \
+      #           -rpe_none \
+      #           -pe_dir PA \
+      #           -eddy_options " --niter=8 --fwhm=10,6,4,2,0,0,0,0 --repol --data_is_shelled --slm=linear " \
+      #           -eddyqc_all ./eddy_output \
+      #           -force -nthreads ${threads}
 
-# dwipreproc mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif \
-#           -rpe_all \
-#           -eddy_options " --niter=8 --fwhm=10,6,4,2,0,0,0,0 --repol --ol_type=both " \
-#           -eddyqc_all ./eddy_output \
-#           -force -nthreads ${threads}
+      # dwipreproc mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif \
+      #           -rpe_all \
+      #           -eddy_options " --niter=8 --fwhm=10,6,4,2,0,0,0,0 --repol --ol_type=both " \
+      #           -eddyqc_all ./eddy_output \
+      #           -force -nthreads ${threads}
 
 cp mr_dwi_denoised_gibbs.mif mr_dwi_denoised_gibbs_preproc.mif
 
@@ -319,10 +319,10 @@ echo ***** NOW 5TTGEN *****
 SUBJECT=\$subjid
 workingdir2=$ABCD/fs/\$subjid*/mri
 
-# workingdir3=$ABCD/fs/${s}/anat
-#cd /lus/theta-fs0/projects/AD_Brain_Imaging/anal/adni/fs/\${SUBJECT}/dmri2
-#mkdir xfm
-### flirt
+      # workingdir3=$ABCD/fs/${s}/anat
+      #cd /lus/theta-fs0/projects/AD_Brain_Imaging/anal/adni/fs/\${SUBJECT}/dmri2
+      #mkdir xfm
+      ### flirt
 echo *****NOW GENERATING ANAT2DIFF.FLT.MAT *****
 mrconvert \$workingdir2/brain.mgz brain.nii.gz -stride -1,2,3 -force
 sleep 0.1
@@ -640,5 +640,5 @@ export LAUNCHER_JOB_FILE=`echo $b`
 \$LAUNCHER_DIR/paramrun
 EOM
 
-sbatch $launch_script
+echo sbatch $launch_script
 done
