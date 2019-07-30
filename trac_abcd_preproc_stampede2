@@ -512,73 +512,73 @@ tensor2metric mr_tensor.mif -rd mr_DTI_RD.mif -force -nthreads ${threads}
 ###########################################(60 Min for 20M)#####################
 
 ###tckgen and connectome (time to 1M for tckgen = 5.5m "stampede-Theta");
-###                      (time to 1M for tckgen = 2.5m "TACC-Stampede2-SKX")
-
-time tckgen WM_FODs_upsample100_norm.mif mr_track_20M.tck \
-  -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample100.nii.gz \
-  -backtrack -crop_at_gmwmi -seed_dynamic WM_FODs_upsample100_norm.mif \
-  -angle 22.5 -maxlength 250 -minlength 10 -power 1.0 -select 20M -force \
-  -nthreads ${threads} && echo 'tckgen done'**********
-
-
-
-  ################################################################################
-  ################################### TCKSIFT ####################
-  ###########################################(5 Min for 1M)#######################
-  ################################################################################
-
-  time tcksift -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample100.nii.gz \
-    mr_track_20M.tck WM_FODs_upsample100_norm.mif \
-    mr_track_2M_SIFT.tck -term_number 2M -force -nthreads ${threads} && \
-    echo 'sift done'*******
-
-
-    ################################################################################
-    ################################################################################
-    ################################### tck2connectome #############################
-    ################################################################################
-    ################################################################################
-
-    ## FA, MD, AD, RD (L2+L3/2)
-    for dti in FA MD AD RD
-    do
-
-    tcksample mr_track_2M_SIFT.tck mr_DTI_\${dti}.mif \
-      mr_track_2M_SIFT_mean_\${dti}.csv \
-      -stat_tck mean -force -nthreads ${threads}
-
-    #tcksample mr_track_global_1e9.tck mr_DTI_\${dti}.mif \
-    #  mr_track_global_1e9_mean_\${dti}.csv \
-    #   -stat_tck mean -force -nthreads ${threads}
-    done
-
-
-    for im in aparc+aseg aparc.a2009s+aseg
-    do
-    #1.count
-    tck2connectome -force -zero_diagonal -nthreads ${threads} \
-                mr_track_2M_SIFT.tck nodes_\${im}.mif mr_connectome_sift_2M_\${im}_count.csv
-    #tck2connectome -force -zero_diagonal -nthreads ${threads} \
-    #            mr_track_global_1e9.tck nodes_\${im}.mif mr_connectome_global1e9_\${im}_count.csv
-    #2.length
-    tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_2M_SIFT.tck nodes_\${im}.mif \
-                mr_connectome_sift_2M_\${im}_length.csv -nthreads ${threads}
-    #tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_global_1e9.tck nodes_\${im}.mif \
-    #            mr_connectome_global1e9_\${im}_length.csv -nthreads ${threads}
-
-    #3-7: FA MD M0 AD RD
-       for dti in FA MD AD RD
-       do
-
-    tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
-                  -nthreads ${threads} mr_track_2M_SIFT.tck nodes_\${im}.mif \
-                  mr_connectome_sift_2M_\${im}_\${dti}.csv
-
-    #tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
-    #              -nthreads ${threads} mr_track_global_1e9.tck nodes_\${im}.mif \
-    #              mr_connectome_global1e9_\${im}_\${dti}.csv
-       done
-    done
+# ###                      (time to 1M for tckgen = 2.5m "TACC-Stampede2-SKX")
+#
+# time tckgen WM_FODs_upsample100_norm.mif mr_track_20M.tck \
+#   -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample100.nii.gz \
+#   -backtrack -crop_at_gmwmi -seed_dynamic WM_FODs_upsample100_norm.mif \
+#   -angle 22.5 -maxlength 250 -minlength 10 -power 1.0 -select 20M -force \
+#   -nthreads ${threads} && echo 'tckgen done'**********
+#
+#
+#
+#   ################################################################################
+#   ################################### TCKSIFT ####################
+#   ###########################################(5 Min for 1M)#######################
+#   ################################################################################
+#
+#   time tcksift -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample100.nii.gz \
+#     mr_track_20M.tck WM_FODs_upsample100_norm.mif \
+#     mr_track_2M_SIFT.tck -term_number 2M -force -nthreads ${threads} && \
+#     echo 'sift done'*******
+#
+#
+#     ################################################################################
+#     ################################################################################
+#     ################################### tck2connectome #############################
+#     ################################################################################
+#     ################################################################################
+#
+#     ## FA, MD, AD, RD (L2+L3/2)
+#     for dti in FA MD AD RD
+#     do
+#
+#     tcksample mr_track_2M_SIFT.tck mr_DTI_\${dti}.mif \
+#       mr_track_2M_SIFT_mean_\${dti}.csv \
+#       -stat_tck mean -force -nthreads ${threads}
+#
+#     #tcksample mr_track_global_1e9.tck mr_DTI_\${dti}.mif \
+#     #  mr_track_global_1e9_mean_\${dti}.csv \
+#     #   -stat_tck mean -force -nthreads ${threads}
+#     done
+#
+#
+#     for im in aparc+aseg aparc.a2009s+aseg
+#     do
+#     #1.count
+#     tck2connectome -force -zero_diagonal -nthreads ${threads} \
+#                 mr_track_2M_SIFT.tck nodes_\${im}.mif mr_connectome_sift_2M_\${im}_count.csv
+#     #tck2connectome -force -zero_diagonal -nthreads ${threads} \
+#     #            mr_track_global_1e9.tck nodes_\${im}.mif mr_connectome_global1e9_\${im}_count.csv
+#     #2.length
+#     tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_2M_SIFT.tck nodes_\${im}.mif \
+#                 mr_connectome_sift_2M_\${im}_length.csv -nthreads ${threads}
+#     #tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_global_1e9.tck nodes_\${im}.mif \
+#     #            mr_connectome_global1e9_\${im}_length.csv -nthreads ${threads}
+#
+#     #3-7: FA MD M0 AD RD
+#        for dti in FA MD AD RD
+#        do
+#
+#     tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
+#                   -nthreads ${threads} mr_track_2M_SIFT.tck nodes_\${im}.mif \
+#                   mr_connectome_sift_2M_\${im}_\${dti}.csv
+#
+#     #tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
+#     #              -nthreads ${threads} mr_track_global_1e9.tck nodes_\${im}.mif \
+#     #              mr_connectome_global1e9_\${im}_\${dti}.csv
+#        done
+#     done
 
 
     ######################################################################################################################################
