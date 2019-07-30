@@ -74,9 +74,9 @@ mkdir -p $ABCD/fs/\$t1/dwi
 ##### number of dwi runs (supposedly two, but some may have only one run)#######
 #num_of_dwi=`ls -l \$dwi_folder/\${subjid}* | egrep -c '^-'`
 #echo "ls -l \$dwi_folder/\${subjid}* | egrep -c '^-' "
-echo "dwi_folder is \$dwi_folder"
-num_of_dwi=`find \$dwi_folder -type f -name \${subjid}\* | wc -l `
-echo "num_of_dwi is \$num_of_dwi"
+echo "dwi_folder is" \$dwi_folder
+num_of_dwi=`find \$dwi_folder -type f -name $subjid\* | wc -l `
+echo "num_of_dwi is" \$num_of_dwi
 
 ################################################################################
 
@@ -84,7 +84,7 @@ if [ \$num_of_dwi -gt 1 ]; then
 
     echo "multiple dti"
 
-    for file in `ls /\${subjid}\*`;do tar -xvf $file -C /tmp;done
+    for file in `ls ${subjid}\*`;do tar -xvf $file -C /tmp;done
 
     cd /tmp/sub-\$subjid/ses-baselineYear1Arm1/dwi/
 
