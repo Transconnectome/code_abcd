@@ -77,13 +77,17 @@ mkdir -p $ABCD/fs/\$t1/dwi
 echo "dwi_folder is" \$dwi_folder
 
 
-dwi=\`find \$dwi_folder -type f -name \${subjid}* \`
-num_of_dwi=\`wc -l \$dwi \`
-#num_of_dwi=\`find \$dwi_folder -type f -name \$subjid\* | wc -l \`
-echo "num_of_dwi is" \$num_of_dwi
+      # dwi=\`find \$dwi_folder -type f -name \${subjid}* \`
+      # echo dwi is \$dwi
+      # num_of_dwi=\`wc -l \$dwi \`
+      # #num_of_dwi=\`find \$dwi_folder -type f -name \$subjid\* | wc -l \`
+      # echo "num_of_dwi is" \$num_of_dwi
+
+ls \$subjid\* | wc -l > tmp
+echo num_of_dwi is `cat tmp`
 ################################################################################
 
-if [ \$num_of_dwi -gt 1 ]; then
+if [ `cat ./tmp` -gt 1 ]; then
 
     echo "multiple dti"
 
