@@ -77,7 +77,7 @@ mkdir -p $ABCD/fs/\$t1/dwi
 echo "dwi_folder is" \$dwi_folder
 
 
-dwi=\`find \$dwi_folder -type f -name \$subjid\* \`
+dwi=\`find \$dwi_folder -type f -name \${subjid}* \`
 num_of_dwi=\`wc -l \$dwi \`
 #num_of_dwi=\`find \$dwi_folder -type f -name \$subjid\* | wc -l \`
 echo "num_of_dwi is" \$num_of_dwi
@@ -87,7 +87,7 @@ if [ \$num_of_dwi -gt 1 ]; then
 
     echo "multiple dti"
 
-    for file in \`ls \${subjid}* \`;do tar -xvf $file -C /tmp;done
+    for file in \`ls \${subjid}* \`;do tar -xvf \${file} -C /tmp;done
 
     cd /tmp/sub-\$subjid/ses-baselineYear1Arm1/dwi/
 
