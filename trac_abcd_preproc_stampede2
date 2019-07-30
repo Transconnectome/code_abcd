@@ -2,7 +2,7 @@
 
 list=$1
 N=`wc ${1} | awk '{print $1}'`
-threads=96 
+threads=96
 #threadsX2=$((${threads}*2))
 
 ABCD=/scratch/03263/jcha9928/data/ABCD/
@@ -155,8 +155,7 @@ fi
                 #
                 # else cp ./dwi_run-01.mif ./mr_dwi.mif
                 # fi
-
-      #ABCD/fs/$t1/dwi
+cd $ABCD/fs/\$t1/dwi
 
 
 # 2. denoising (time:1m)
@@ -358,7 +357,7 @@ flirt -in brain -ref mr_meanb0_bet -out brain2diff_flt_dof6 -omat brain2diff_dof
 sleep 0.1
 
 #2. ants nonlinear warping
-/scratch/03263/jcha9928/code/antswarp brain2diff_flt_dof6 mr_meanb0_bet
+$WORK/code/antswarp brain2diff_flt_dof6 mr_meanb0_bet
 sleep 0.1
 
 #3. 5ttgen
