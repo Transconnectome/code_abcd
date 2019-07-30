@@ -84,7 +84,7 @@ echo "dwi_folder is" \$dwi_folder
       # echo "num_of_dwi is" \$num_of_dwi
 
 ls \${subjid}* | wc -l > tmp
-echo num_of_dwi is `cat tmp`
+echo num_of_dwi is \`cat tmp\`
 ################################################################################
 
 if [ \`cat ./tmp\` -gt 1 ]; then
