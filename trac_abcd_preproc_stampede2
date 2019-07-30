@@ -83,11 +83,11 @@ echo "dwi_folder is" \$dwi_folder
       # #num_of_dwi=\`find \$dwi_folder -type f -name \$subjid\* | wc -l \`
       # echo "num_of_dwi is" \$num_of_dwi
 
-ls \$subjid\* | wc -l > tmp
+ls \${subjid}* | wc -l > tmp
 echo num_of_dwi is `cat tmp`
 ################################################################################
 
-if [ `cat ./tmp` -gt 1 ]; then
+if [ \`cat ./tmp\` -gt 1 ]; then
 
     echo "multiple dti"
 
