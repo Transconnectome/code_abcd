@@ -70,6 +70,8 @@ cd \$dwi_folder
 subjid=`echo $s | cut -d"_" -f1`
 t1=\${subjid}_baseline*T1*
 
+echo %%%%%%%%%%%%%%%% target folder is $ABCD/fs/\$t1/dwi %%%%%%%%%%%%%%
+
 mkdir -p $ABCD/fs/\$t1/dwi
 #dti=`echo $s | sed "s/T1/DTI/g"`
 
