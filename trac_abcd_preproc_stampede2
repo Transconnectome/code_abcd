@@ -40,6 +40,13 @@ source ~/.bashrc
 #DATA_source=$ABCD/data/${s}
 #DATA_target=$ABCD/data/${s}
 
+################################################################################
+####      SET UP OPEN MP THREADS ###############################################
+ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=$threads
+export ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS
+################################################################################
+
+
 workingdir=/tmp/${s}/
 mkdir -p \${workingdir}
 cd \${workingdir}
