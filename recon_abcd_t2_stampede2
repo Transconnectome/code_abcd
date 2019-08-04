@@ -66,7 +66,7 @@ sleep $[ ( $RANDOM % 10 )  + 1 ]s
 
 
 recon-all -s ${T1name} \
-          -T2 sub-NDARINV5MFBJTBG/ses-baselineYear1Arm1/anat/sub-NDARINV5MFBJTBG_ses-baselineYear1Arm1_run-01_T2w.nii \
+          -T2 sub-${SUBJECT}/ses-baselineYear1Arm1/anat/sub-${SUBJECT}_ses-baselineYear1Arm1_run-01_T2w.nii \
           -T2pial \
           -autorecon3
 
