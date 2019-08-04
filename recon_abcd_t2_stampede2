@@ -48,12 +48,12 @@ cat<<EOC >$CMD
 #!/bin/bash
 source ~/.bashrc
 
-
 tar -xzvf $ABCD/data_T1_release2_201905/${s} -C /tmp
+tar -xvf $ABCD/data_T2_201908/${s}*.tgz -C /tmp
 
-T1w=\`find /tmp/*$SUBJECT -name "*_T1w.nii" | head -n 1\`
+#T1w=\`find /tmp/*$SUBJECT -name "*_T1w.nii" | head -n 1\`
 
-rm -rf /tmp/${SUBJECT}/
+#rm -rf /tmp/${SUBJECT}/
 
 ################################################################################
 ################################## freesurfer ##############
@@ -64,8 +64,9 @@ rm -rf /tmp/${SUBJECT}/
 
 sleep $[ ( $RANDOM % 10 )  + 1 ]s
 
+
 recon-all -s ${T1name} \
-          -T2 /path/to/T2_volume \
+          -T2 sub-NDARINV5MFBJTBG/ses-baselineYear1Arm1/anat/sub-NDARINV5MFBJTBG_ses-baselineYear1Arm1_run-01_T2w.nii \
           -T2pial \
           -autorecon3
 
