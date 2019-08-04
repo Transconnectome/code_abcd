@@ -78,7 +78,7 @@ subjid=`echo $s | cut -d"_" -f1`
 # t1=`find . -name \${subjid}_baseline\*T1\* -type d`
 find ../fs -maxdepth 1 -name \${subjid}_baselineYear1*T1* -type d | cut -d"/" -f3 > /tmp/tmp_${s}_t1name
 
-echo %%%%%%%%%%%%%%%% target folder is $ABCD/fs/`cat /tmp/tmp_${s}_t1name`/dwi %%%%%%%%%%%%%%
+echo %%%%%%%%%%%%%%%% target folder is $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi %%%%%%%%%%%%%%
 
 mkdir -p $ABCD/fs/\$t1/dwi
 #dti=`echo $s | sed "s/T1/DTI/g"`
