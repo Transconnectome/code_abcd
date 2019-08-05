@@ -46,7 +46,6 @@ DATA_target=$ABCD/fs
 
 #echo ${SUBJECT}
 
-
 cat<<EOC >$CMD
 #!/bin/bash
 source ~/.bashrc
