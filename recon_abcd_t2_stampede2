@@ -18,11 +18,12 @@ i=1
 for s in `cat $ABCD_code/$list`
 do
 #s=`echo $SUBJECT | egrep -o '[0-9]{8}'`
-T1name=`echo $s | cut -d"." -f1`
-SUBJECT=`echo $T1name | cut -d"_" -f1`
+#T1name=`echo $s | cut -d"." -f1`
+#SUBJECT=`echo $T1name | cut -d"_" -f1`
+SUBJECT=$s
+T1name=
 DATA_source=$ABCD/data/${s}
 DATA_target=$ABCD/fs
-
 
   CMD=$ABCD_job/fs.stampede2.${T1name}
   rm -rf $CMD
@@ -48,7 +49,7 @@ cat<<EOC >$CMD
 #!/bin/bash
 source ~/.bashrc
 
-tar -xzvf $ABCD/data_T1_release2_201905/${s} -C /tmp
+#tar -xzvf $ABCD/data_T1_release2_201905/${s} -C /tmp
 tar -xvf $ABCD/data_T2_201908/${s}*.tgz -C /tmp
 
 #T1w=\`find /tmp/*$SUBJECT -name "*_T1w.nii" | head -n 1\`
@@ -65,8 +66,9 @@ tar -xvf $ABCD/data_T2_201908/${s}*.tgz -C /tmp
 sleep $[ ( $RANDOM % 10 )  + 1 ]s
 
 
-recon-all -s ${T1name} \
-          -T2 sub-${SUBJECT}/ses-baselineYear1Arm1/anat/sub-${SUBJECT}_ses-baselineYear1Arm1_run-01_T2w.nii \
+recon-all -sd
+          -s ${T1name} \
+          -T2 sub-${SUBJECT}/ses-baselineYear1Arm1/anat/sub-${SUBJECT}_ses-baselineYear1Arm1_*_T2w.nii \
           -T2pial \
           -autorecon3
 
