@@ -72,7 +72,7 @@ find $ABCD/fs -maxdepth 1 \
 sleep 0.1
 
 recon-all -sd $ABCD/fs
-          -s `cat /tmp/tmp_t1name_${SUBJECT}` \
+          -s \`cat /tmp/tmp_t1name_${SUBJECT} \` \
           -T2 /tmp/sub-${SUBJECT}/ses-baselineYear1Arm1/anat/sub-${SUBJECT}_ses-baselineYear1Arm1_*_T2w.nii \
           -T2pial \
           -autorecon3
