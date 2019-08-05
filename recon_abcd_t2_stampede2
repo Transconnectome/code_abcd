@@ -27,10 +27,10 @@ SUBJECT=$s
 DATA_source=$ABCD/data/${s}
 DATA_target=$ABCD/fs
 
-  CMD=$ABCD_job/fs.stampede2.${T1name}
+  CMD=$ABCD_job/fs.stampede2.${SUBJECT}
   rm -rf $CMD
 
-  LOG=$ABCD_job/log.fs.stampede2.${T1name}
+  LOG=$ABCD_job/log.fs.stampede2.${SUBJECT}
   rm -rf $LOG
 
 #  subject=`echo $s | cut -d "_" -f1`
