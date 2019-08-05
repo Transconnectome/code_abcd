@@ -20,8 +20,10 @@ do
 #s=`echo $SUBJECT | egrep -o '[0-9]{8}'`
 #T1name=`echo $s | cut -d"." -f1`
 #SUBJECT=`echo $T1name | cut -d"_" -f1`
+
 SUBJECT=$s
-T1name=
+
+#T1name=`find fs -maxdepth 1 -name *${SUBJECT}*_baselineYear1Arm1_ABCD-MPROC-T1_* -type d | cut -d"/" -f2`
 DATA_source=$ABCD/data/${s}
 DATA_target=$ABCD/fs
 
@@ -65,10 +67,14 @@ tar -xvf $ABCD/data_T2_201908/${s}*.tgz -C /tmp
 
 sleep $[ ( $RANDOM % 10 )  + 1 ]s
 
+find $ABCD/fs -maxdepth 1 \
+        -name *${SUBJECT}*_baselineYear1Arm1_ABCD-MPROC-T1_* -type d | cut -d"/" -f9 > /tmp/tmp_t1name_${SUBJECT}
 
-recon-all -sd
-          -s ${T1name} \
-          -T2 sub-${SUBJECT}/ses-baselineYear1Arm1/anat/sub-${SUBJECT}_ses-baselineYear1Arm1_*_T2w.nii \
+sleep 0.1
+
+recon-all -sd $ABCD/fs
+          -s `cat /tmp/tmp_t1name_${SUBJECT}` \
+          -T2 /tmp/sub-${SUBJECT}/ses-baselineYear1Arm1/anat/sub-${SUBJECT}_ses-baselineYear1Arm1_*_T2w.nii \
           -T2pial \
           -autorecon3
 
@@ -85,13 +91,13 @@ recon-all -sd
 
 echo "I THINK EVERYTHING IS DONE BY NOW"
 
-cp -frv /tmp/${T1name} ${DATA_target}
+#cp -frv /tmp/${T1name} ${DATA_target}
 
 EOC
 
 ################################################## END OF CMD##########################################################
 chmod +x $CMD
-echo "$CMD > ./job/fs_output_subject_${T1name}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1 " >> $CMD_batch
+echo "$CMD > ./job/fs_output_subject_T2_${SUBJECT}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1 " >> $CMD_batch
 
 done
 
@@ -115,7 +121,7 @@ cat<<EOM > $launch_script
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 #SBATCH -N 177                            # Total # of nodes
 #SBATCH --ntasks-per-node 68            # Total # of mpi tasks
-#SBATCH -t 12:00:00        # Run time (hh:mm:ss)
+#SBATCH -t 4:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
 #SBATCH --mail-type=all    # Send email at begin and end of job
 #SBATCH -A TG-IBN180001
