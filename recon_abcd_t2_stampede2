@@ -75,11 +75,11 @@ sleep 0.1
 cp -r $ABCD/fs/\`cat /tmp/tmp_t1name_${SUBJECT} \` /tmp
 
 recon-all -sd /tmp \
-          # -sd $ABCD/fs \
           -s \`cat /tmp/tmp_t1name_${SUBJECT} \` \
           -T2 /tmp/sub-${SUBJECT}/ses-baselineYear1Arm1/anat/sub-${SUBJECT}_ses-baselineYear1Arm1_*_T2w.nii \
           -T2pial \
           -autorecon3
+          # -sd $ABCD/fs \
 
 # recon-all -sd /tmp \
 #           -make all \
