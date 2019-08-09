@@ -108,7 +108,9 @@ done
 rm batch_fs_*
 n_list=`wc ${list} | awk '{print $1}'`
 # n_split=$((n_list/119+1))
-n_split=$((150*16))
+#n_split=$((150*16))
+n_split=$((1*16))
+
 split -l $n_split $CMD_batch batch_fs_
 
 for b in `ls batch_fs_*`
