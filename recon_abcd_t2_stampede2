@@ -72,7 +72,7 @@ find $ABCD/fs -maxdepth 1 \
 sleep 10
 
 # copy the subject folder to /tmp
-cp -r $ABCD/fs/\`cat /tmp/tmp_t1name_${SUBJECT} \` /tmp
+cp -rfv $ABCD/fs/\`cat /tmp/tmp_t1name_${SUBJECT} \` /tmp
 
 rm /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`/scripts/IsRunning.lh+rh
 
