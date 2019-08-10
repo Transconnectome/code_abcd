@@ -117,7 +117,7 @@ launch_script=${ABCD_job}/script_${b}
 
 cat<<EOM > $launch_script
 #!/bin/bash
-#SBATCH -J abcd_${b}          # Job name
+#SBATCH -J abcd_fs_t2          # Job name
 #%###SBATCH -o ./job/ABCD_a2.o%j       # Name of stdout output file
 #%###SBATCH -e ./job/ABCD_a2.e%j       # Name of stderr error file
 #SBATCH -p skx-normal          # Queue (partition) name
