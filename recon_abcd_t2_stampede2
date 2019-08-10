@@ -74,6 +74,8 @@ sleep 0.1
 # copy the subject folder to /tmp
 cp -r $ABCD/fs/\`cat /tmp/tmp_t1name_${SUBJECT} \` /tmp
 
+rm /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`/scripts/IsRunning.lh+rh
+
 recon-all -sd /tmp \
           -s \`cat /tmp/tmp_t1name_${SUBJECT} \` \
           -T2 /tmp/sub-${SUBJECT}/ses-baselineYear1Arm1/anat/sub-${SUBJECT}_ses-baselineYear1Arm1_*_T2w.nii \
