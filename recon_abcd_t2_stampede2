@@ -69,7 +69,7 @@ sleep $[ ( $RANDOM % 10 )  + 1 ]s
 find $ABCD/fs -maxdepth 1 \
         -name *${SUBJECT}*_baselineYear1Arm1_ABCD-MPROC-T1_* -type d | cut -d"/" -f9 > /tmp/tmp_t1name_${SUBJECT}
 
-sleep 0.1
+sleep 10
 
 # copy the subject folder to /tmp
 cp -r $ABCD/fs/\`cat /tmp/tmp_t1name_${SUBJECT} \` /tmp
