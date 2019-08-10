@@ -67,7 +67,7 @@ tar -xvf $ABCD/data_T2_201908/${s}*.tgz -C /tmp
 sleep $[ ( $RANDOM % 10 )  + 1 ]s
 
 find $ABCD/fs -maxdepth 1 \
-        -name *${SUBJECT}*_baselineYear1Arm1_ABCD-MPROC-T1_* -type d | cut -d"/" -f9 > /tmp/tmp_t1name_${SUBJECT}
+        -name *${SUBJECT}*_baselineYear1Arm1_ABCD-MPROC-T1_* -type d | cut -d"/" -f9 | tail -n1 > /tmp/tmp_t1name_${SUBJECT}
 
 sleep 10
 
