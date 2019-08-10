@@ -81,7 +81,15 @@ recon-all -sd /tmp \
           -T2 /tmp/sub-${SUBJECT}/ses-baselineYear1Arm1/anat/sub-${SUBJECT}_ses-baselineYear1Arm1_*_T2w.nii \
           -T2pial \
           -autorecon3
+          -hippocampal-subfields-T1 \
           # -sd $ABCD/fs \
+
+segmentHA_T2.sh  \`cat /tmp/tmp_t1name_${SUBJECT} \` \
+                /tmp/sub-${SUBJECT}/ses-baselineYear1Arm1/anat/sub-${SUBJECT}_ses-baselineYear1Arm1_*_T2w.nii \
+                T2 \
+                1 \
+                /tmp
+
 
 # recon-all -sd /tmp \
 #           -make all \
