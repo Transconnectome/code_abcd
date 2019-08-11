@@ -91,10 +91,10 @@ segmentHA_T2.sh  \`cat /tmp/tmp_t1name_${SUBJECT} \` \
                 /tmp
 
 
-# recon-all -sd /tmp \
-#           -make all \
-#           -s ${s} \
-#           -no-isrunning
+                        # recon-all -sd /tmp \
+                        #           -make all \
+                        #           -s ${s} \
+                        #           -no-isrunning
 
 tar -cvf /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
         /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`
