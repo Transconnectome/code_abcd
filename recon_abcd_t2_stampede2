@@ -102,7 +102,9 @@ tar -cvf /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
 cp /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
    $ABCD/fs
 
-tar -xvf $ABCD/fs/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar
+cd $ABCD/fs
+
+tar -xvf --overwrite $ABCD/fs/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar
 
 ################################################################################
 ################################################################################
