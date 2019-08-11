@@ -96,8 +96,12 @@ segmentHA_T2.sh  \`cat /tmp/tmp_t1name_${SUBJECT} \` \
 #           -s ${s} \
 #           -no-isrunning
 
-tar -cvf /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \` /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar
-cp /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar $ABCD/fs
+tar -cvf /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
+        /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`
+
+cp /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
+   $ABCD/fs
+
 tar -xvf $ABCD/fs/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar
 
 ################################################################################
