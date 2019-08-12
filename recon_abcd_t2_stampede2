@@ -128,7 +128,7 @@ rm batch_fs_*
 n_list=`wc ${list} | awk '{print $1}'`
 # n_split=$((n_list/119+1))
 #n_split=$((150*16))
-n_split=$((1*16))
+n_split=$((1*48))
 
 split -l $n_split $CMD_batch batch_fs_
 
@@ -141,11 +141,11 @@ cat<<EOM > $launch_script
 #SBATCH -J abcd_fs_t2          # Job name
 #%###SBATCH -o ./job/ABCD_a2.o%j       # Name of stdout output file
 #%###SBATCH -e ./job/ABCD_a2.e%j       # Name of stderr error file
-#SBATCH -p normal          # Queue (partition) name
+#SBATCH -p normal-skx          # Queue (partition) name
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 ######SBATCH -N 150                            # Total # of nodes
 #SBATCH -N 1
-#SBATCH --ntasks-per-node 16            # Total # of mpi tasks
+#SBATCH --ntasks-per-node 48            # Total # of mpi tasks
 #SBATCH -t 24:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
 #SBATCH --mail-type=all    # Send email at begin and end of job
