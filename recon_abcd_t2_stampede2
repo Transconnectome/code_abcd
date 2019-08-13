@@ -82,6 +82,7 @@ recon-all -sd /tmp \
           -T2pial \
           -autorecon3
           -hippocampal-subfields-T1 \
+          -parallel -openmp 2
           # -sd $ABCD/fs \
 
 segmentHA_T2.sh  \`cat /tmp/tmp_t1name_${SUBJECT} \` \
@@ -145,8 +146,8 @@ cat<<EOM > $launch_script
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 ######SBATCH -N 150                            # Total # of nodes
 #SBATCH -N 1
-#SBATCH --ntasks-per-node 48            # Total # of mpi tasks
-#SBATCH -t 24:00:00        # Run time (hh:mm:ss)
+#SBATCH --ntasks-per-node 24            # Total # of mpi tasks
+#SBATCH -t 48:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
 #SBATCH --mail-type=all    # Send email at begin and end of job
 #SBATCH -A TG-IBN180001
