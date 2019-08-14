@@ -80,10 +80,10 @@ recon-all -sd /tmp \
           -s \`cat /tmp/tmp_t1name_${SUBJECT} \` \
           -T2 /tmp/sub-${SUBJECT}/ses-baselineYear1Arm1/anat/sub-${SUBJECT}_ses-baselineYear1Arm1_*_T2w.nii \
           -T2pial \
-          -autorecon3
-          -hippocampal-subfields-T1 \
+          -autorecon3 \
           -parallel -openmp 2
           # -sd $ABCD/fs \
+#           -hippocampal-subfields-T1 \
 
 segmentHA_T2.sh  \`cat /tmp/tmp_t1name_${SUBJECT} \` \
                 /tmp/sub-${SUBJECT}/ses-baselineYear1Arm1/anat/sub-${SUBJECT}_ses-baselineYear1Arm1_*_T2w.nii \
@@ -97,15 +97,19 @@ segmentHA_T2.sh  \`cat /tmp/tmp_t1name_${SUBJECT} \` \
                         #           -s ${s} \
                         #           -no-isrunning
 
-tar -cvf /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
-        /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`
+cd /tmp
 
-cp /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
+tar -cvf \`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
+        \`cat /tmp/tmp_t1name_${SUBJECT} \`
+
+cp \`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
    $ABCD/fs
 
-cd $ABCD/fs
+tar -xvf $ABCD/fs/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
+    -C $ABCD/fs
 
-tar -xvf --overwrite $ABCD/fs/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar
+
+
 
 ################################################################################
 ################################################################################
