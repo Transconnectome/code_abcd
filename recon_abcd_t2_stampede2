@@ -149,7 +149,7 @@ cat<<EOM > $launch_script
 #SBATCH -p normal          # Queue (partition) name
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 ######SBATCH -N 150                            # Total # of nodes
-#SBATCH -N 1
+#SBATCH -N 231
 #SBATCH --ntasks-per-node 24            # Total # of mpi tasks
 #SBATCH -t 36:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
