@@ -175,5 +175,5 @@ export LAUNCHER_JOB_FILE=`echo $b`
 
 EOM
 
-sbatch $launch_script
+echo sbatch $launch_script
 done
