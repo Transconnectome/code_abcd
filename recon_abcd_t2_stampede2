@@ -133,7 +133,7 @@ rm batch_fs_*
 n_list=`wc ${list} | awk '{print $1}'`
 # n_split=$((n_list/119+1))
 #n_split=$((150*16))
-n_split=$((1*24))
+n_split=$((231*24))
 
 split -l $n_split $CMD_batch batch_fs_
 
@@ -175,5 +175,5 @@ export LAUNCHER_JOB_FILE=`echo $b`
 
 EOM
 
-echo sbatch $launch_script
+sbatch $launch_script
 done
