@@ -133,7 +133,7 @@ rm batch_fs_*
 n_list=`wc ${list} | awk '{print $1}'`
 # n_split=$((n_list/119+1))
 #n_split=$((150*16))
-n_split=$((231*24))
+n_split=$((66*24))
 
 split -l $n_split $CMD_batch batch_fs_
 
@@ -149,7 +149,7 @@ cat<<EOM > $launch_script
 #SBATCH -p normal          # Queue (partition) name
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 ######SBATCH -N 150                            # Total # of nodes
-#SBATCH -N 231
+#SBATCH -N 66
 #SBATCH --ntasks-per-node 24            # Total # of mpi tasks
 #SBATCH -t 36:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
