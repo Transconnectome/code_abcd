@@ -144,8 +144,8 @@ launch_script=${ABCD_job}/script_${b}
 cat<<EOM > $launch_script
 #!/bin/bash
 #SBATCH -J abcd_fs_t2          # Job name
-#%###SBATCH -o ./job/ABCD_a2.o%j       # Name of stdout output file
-#%###SBATCH -e ./job/ABCD_a2.e%j       # Name of stderr error file
+#%###SBATCH -o ./job/ABCD_t2.o%j       # Name of stdout output file
+#%###SBATCH -e ./job/ABCD_t2.e%j       # Name of stderr error file
 #SBATCH -p normal          # Queue (partition) name
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 ######SBATCH -N 150                            # Total # of nodes
