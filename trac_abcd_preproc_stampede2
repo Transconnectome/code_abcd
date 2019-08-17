@@ -2,7 +2,7 @@
 
 list=$1
 N=`wc ${1} | awk '{print $1}'`
-threads=16
+threads=6
 #threadsX2=$((${threads}*2))
 
 ABCD=/scratch/03263/jcha9928/data/ABCD/
