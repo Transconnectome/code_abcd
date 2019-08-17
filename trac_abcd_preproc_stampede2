@@ -2,7 +2,7 @@
 
 list=$1
 N=`wc ${1} | awk '{print $1}'`
-threads=6
+threads=16
 #threadsX2=$((${threads}*2))
 
 ABCD=/scratch/03263/jcha9928/data/ABCD/
@@ -95,7 +95,7 @@ echo "dwi_folder is" \$dwi_folder
       # #num_of_dwi=\`find \$dwi_folder -type f -name \$subjid\* | wc -l \`
       # echo "num_of_dwi is" \$num_of_dwi
 
-ls \${subjid}\* | wc -l > /tmp/tmp_${s}
+ls \${subjid}* | wc -l > /tmp/tmp_${s}
 echo num_of_dwi is \`cat /tmp/tmp_${s}\`
 ################################################################################
 
