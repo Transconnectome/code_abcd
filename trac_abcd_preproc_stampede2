@@ -136,7 +136,7 @@ if [ \`cat /tmp/tmp_${s} \` -gt 1 ]; then
 
     cd /tmp/sub-\$subjid/ses-baselineYear1Arm1/dwi/
 
-    mrconvert *run-0*_dwi.nii /
+    mrconvert *run-0*_dwi.nii \
             mr_dwi.mif \
             -json_import *run-0*_dwi.json \
             -fslgrad     *run-0*_dwi.bvec \
