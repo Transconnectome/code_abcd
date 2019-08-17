@@ -132,7 +132,7 @@ if [ \`cat /tmp/tmp_${s} \` -gt 1 ]; then
 
     cd \$dwi_folder
 
-    tar -xvf ${subjid}* -C /tmp
+    tar -xvf \${subjid}* -C /tmp
 
     cd /tmp/sub-\$subjid/ses-baselineYear1Arm1/dwi/
 
