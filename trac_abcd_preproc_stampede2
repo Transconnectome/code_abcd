@@ -2,7 +2,7 @@
 
 list=$1
 N=`wc ${1} | awk '{print $1}'`
-threads=16
+threads=136
 #threadsX2=$((${threads}*2))
 
 ABCD=/scratch/03263/jcha9928/data/ABCD/
@@ -341,10 +341,12 @@ sleep 0.1
 ##################Preparation for 5TT using freesurfer APARC+ASEG ############################################################
 echo ***** NOW 5TTGEN *****
 
-../fs/$subjid*
+#../fs/$subjid*
+#../fs/\`cat /tmp/tmp_${s}_t1name\`/mri
 
 SUBJECT=\$subjid
-workingdir2=$ABCD/fs/\$subjid*/mri
+#workingdir2=$ABCD/fs/\$subjid*/mri
+workingdir2=$ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/mri
 
       # workingdir3=$ABCD/fs/${s}/anat
       #cd /lus/theta-fs0/projects/AD_Brain_Imaging/anal/adni/fs/\${SUBJECT}/dmri2
@@ -446,7 +448,8 @@ labelconvert aparc+aseg_diff_flt_dof6_warped_synant_upsample100.nii $FREESURFER_
 	nodes_aparc+aseg.mif -force
 sleep 0.1
 
-labelconvert aparc.a2009s+aseg_diff_flt_dof6_warped_synant_upsample100.nii $FREESURFER_HOME/FreeSurferColorLUT.txt \
+labelconvert aparc.a2009s+aseg_diff_flt_dof6_warped_synant_upsample100.nii \
+             /work/03263/jcha9928/stampede2/app/freesurfer_dev/freesurfer/FreeSurferColorLUT.txt \
 	/work/03263/jcha9928/stampede2/app/mrtrix3/share/mrtrix3/labelconvert/fs_a2009s.txt \
 	nodes_aparc.a2009s+aseg.mif -force
 sleep 0.1
@@ -457,7 +460,9 @@ sleep 0.1
 #%% 9. dwi2response-subject level %%%%%%%%%%%  (time: 10m)
 #if [ ! -e response_wm.txt ]; then
     echo dwi2response
-    time dwi2response msmt_5tt mr_dwi_denoised_gibbs_crop_preproc_biasCorr.mif 5tt_freesurfer2diff.nii \
+    time dwi2response msmt_5tt \
+		      mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif \
+		      5tt_diff_upsample100.nii \
             response_wm.txt response_gm.txt response_csf.txt \
             -voxels response_voxels.mif -force -nthreads ${threads}
 #fi
@@ -500,7 +505,7 @@ time mtnormalise WM_FODs_upsample100.mif WM_FODs_upsample100_norm.mif \
               -nthreads ${threads} -force
 
 mrconvert mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif \
-      mmr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.nii \
+      mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.nii \
       -force -nthreads ${threads}
 
 mrconvert mr_dilate_mask_upsample100.mif mr_dilate_mask_upsample100.nii \
@@ -518,24 +523,24 @@ tensor2metric mr_tensor.mif -adc mr_DTI_MD.mif -force -nthreads ${threads}
 tensor2metric mr_tensor.mif -ad mr_DTI_AD.mif -force -nthreads ${threads}
 tensor2metric mr_tensor.mif -rd mr_DTI_RD.mif -force -nthreads ${threads}
 
-###benchmark time is ~8M using TACC-SKX-96 threads##############################
+##benchmark time is ~8M using TACC-SKX-96 threads##############################
 
-# ################################################################################
-# ################################### STREAMLINE TRACTOGRAPHY ####################
-# ###########################################(2.5 Min for 1M)#####################
-# ###########################################(60 Min for 20M)#####################
-#
-# ##tckgen and connectome (time to 1M for tckgen = 5.5m "stampede-Theta");
-# ###                      (time to 1M for tckgen = 2.5m "TACC-Stampede2-SKX")
-#
-# time tckgen WM_FODs_upsample100_norm.mif mr_track_20M.tck \
-#   -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample100.nii \
-#   -backtrack \
-#   -crop_at_gmwmi \
-#   -seed_dynamic WM_FODs_upsample100_norm.mif \
-#   -angle 22.5 -maxlength 250 -minlength 10 -power 1.0 -select 2M -force \
-#   -nthreads ${threads} && echo 'tckgen done'**********
-#
+ ################################################################################
+ ################################### STREAMLINE TRACTOGRAPHY ####################
+ ###########################################(2.5 Min for 1M)#####################
+ ###########################################(60 Min for 20M)#####################
+
+ ##tckgen and connectome (time to 1M for tckgen = 5.5m "stampede-Theta");
+ ###                      (time to 1M for tckgen = 2.5m "TACC-Stampede2-SKX")
+
+ time tckgen WM_FODs_upsample100_norm.mif mr_track_20M.tck \
+   -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample100.nii \
+   -backtrack \
+   -crop_at_gmwmi \
+   -seed_dynamic WM_FODs_upsample100_norm.mif \
+   -angle 22.5 -maxlength 250 -minlength 10 -power 1.0 -select 2M -force \
+   -nthreads ${threads} && echo 'tckgen done'**********
+
 #
 #
 #   ################################################################################
@@ -543,58 +548,58 @@ tensor2metric mr_tensor.mif -rd mr_DTI_RD.mif -force -nthreads ${threads}
 #   ###########################################(5 Min for 1M)#######################
 #   ################################################################################
 #
-#   time tcksift -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample100.nii \
-#     mr_track_20M.tck WM_FODs_upsample100_norm.mif \
-#     mr_track_2M_SIFT.tck -term_number 1M -force -nthreads ${threads} && \
-#     echo 'sift done'*******
-#
-#
+   time tcksift -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample100.nii \
+     mr_track_20M.tck WM_FODs_upsample100_norm.mif \
+     mr_track_2M_SIFT.tck -term_number 1M -force -nthreads ${threads} && \
+     echo 'sift done'*******
+
+
 #     ################################################################################
 #     ################################################################################
 #     ################################### tck2connectome #############################
 #     ################################################################################
 #     ################################################################################
 #
-#     ## FA, MD, AD, RD (L2+L3/2)
-#     for dti in FA MD AD RD
-#     do
-#
-#     tcksample mr_track_2M_SIFT.tck mr_DTI_\${dti}.mif \
-#       mr_track_2M_SIFT_mean_\${dti}.csv \
-#       -stat_tck mean -force -nthreads ${threads}
-#
-#     #tcksample mr_track_global_1e9.tck mr_DTI_\${dti}.mif \
-#     #  mr_track_global_1e9_mean_\${dti}.csv \
-#     #   -stat_tck mean -force -nthreads ${threads}
-#     done
-#
-#
-#     for im in aparc+aseg aparc.a2009s+aseg
-#     do
-#     #1.count
-#     tck2connectome -force -zero_diagonal -nthreads ${threads} \
-#                 mr_track_2M_SIFT.tck nodes_\${im}.mif mr_connectome_sift_2M_\${im}_count.csv
-#     #tck2connectome -force -zero_diagonal -nthreads ${threads} \
-#     #            mr_track_global_1e9.tck nodes_\${im}.mif mr_connectome_global1e9_\${im}_count.csv
-#     #2.length
-#     tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_2M_SIFT.tck nodes_\${im}.mif \
-#                 mr_connectome_sift_2M_\${im}_length.csv -nthreads ${threads}
-#     #tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_global_1e9.tck nodes_\${im}.mif \
-#     #            mr_connectome_global1e9_\${im}_length.csv -nthreads ${threads}
-#
-#     #3-7: FA MD M0 AD RD
-#        for dti in FA MD AD RD
-#        do
-#
-#     tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
-#                   -nthreads ${threads} mr_track_2M_SIFT.tck nodes_\${im}.mif \
-#                   mr_connectome_sift_2M_\${im}_\${dti}.csv
-#
-#     #tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
-#     #              -nthreads ${threads} mr_track_global_1e9.tck nodes_\${im}.mif \
-#     #              mr_connectome_global1e9_\${im}_\${dti}.csv
-#        done
-#     done
+     ## FA, MD, AD, RD (L2+L3/2)
+     for dti in FA MD AD RD
+     do
+
+     tcksample mr_track_2M_SIFT.tck mr_DTI_\${dti}.mif \
+       mr_track_2M_SIFT_mean_\${dti}.csv \
+       -stat_tck mean -force -nthreads ${threads}
+
+     #tcksample mr_track_global_1e9.tck mr_DTI_\${dti}.mif \
+     #  mr_track_global_1e9_mean_\${dti}.csv \
+     #   -stat_tck mean -force -nthreads ${threads}
+     done
+
+
+     for im in aparc+aseg aparc.a2009s+aseg
+     do
+     #1.count
+     tck2connectome -force -zero_diagonal -nthreads ${threads} \
+                 mr_track_2M_SIFT.tck nodes_\${im}.mif mr_connectome_sift_2M_\${im}_count.csv
+     #tck2connectome -force -zero_diagonal -nthreads ${threads} \
+     #            mr_track_global_1e9.tck nodes_\${im}.mif mr_connectome_global1e9_\${im}_count.csv
+     #2.length
+     tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_2M_SIFT.tck nodes_\${im}.mif \
+                 mr_connectome_sift_2M_\${im}_length.csv -nthreads ${threads}
+     #tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_global_1e9.tck nodes_\${im}.mif \
+     #            mr_connectome_global1e9_\${im}_length.csv -nthreads ${threads}
+
+     #3-7: FA MD M0 AD RD
+        for dti in FA MD AD RD
+        do
+
+     tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
+                   -nthreads ${threads} mr_track_2M_SIFT.tck nodes_\${im}.mif \
+                   mr_connectome_sift_2M_\${im}_\${dti}.csv
+
+     #tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
+     #             -nthreads ${threads} mr_track_global_1e9.tck nodes_\${im}.mif \
+     #              mr_connectome_global1e9_\${im}_\${dti}.csv
+        done
+     done
 #
 #
 #     ######################################################################################################################################
@@ -637,7 +642,7 @@ done
 rm batch_abcd_*
 n_list=`wc ${list} | awk '{print $1}'`
 # n_split=$((n_list/256+1))
-n_split=$((256*12))
+n_split=$((251*1))
 # n_split=1971
 split -l $n_split $CMD_batch batch_abcd_
 
@@ -653,14 +658,14 @@ n_line=`wc -l $b | awk '{print $1}'`
 
 cat<<EOM > $launch_script
 #!/bin/bash
-#SBATCH -J abcd_${b}          # Job name
-#%###SBATCH -o ./job/ABCD_a2.o%j       # Name of stdout output file
-#%###SBATCH -e ./job/ABCD_a2.e%j       # Name of stderr error file
+#SBATCH -J mrtrx_${b}          # Job name
+#%###SBATCH -o ./job/mrtrx_a2.o%j       # Name of stdout output file
+#%###SBATCH -e ./job/mrtrx_a2.e%j       # Name of stderr error file
 #SBATCH -p normal          # Queue (partition) name
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
-#SBATCH -N 256                            # Total # of nodes
+#SBATCH -N 251                            # Total # of nodes
 ######SBATCH -N 1970
-#SBATCH --ntasks-per-node 12            # Total # of mpi tasks
+#SBATCH --ntasks-per-node 1            # Total # of mpi tasks
 #SBATCH -t 12:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
 #SBATCH --mail-type=all    # Send email at begin and end of job
@@ -681,5 +686,5 @@ export LAUNCHER_JOB_FILE=`echo $b`
 \$LAUNCHER_DIR/paramrun
 EOM
 
-sbatch $launch_script
+echo sbatch $launch_script
 done
