@@ -119,6 +119,7 @@ if [ \`cat /tmp/tmp_${s} \` -gt 1 ]; then
     # cd $ABCD/fs/\$t1/dwi
 
     mrcat dwi_run-01.mif dwi_run-02.mif \
+          -force \
           $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/mr_dwi.mif
 
                   # mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.nii \
