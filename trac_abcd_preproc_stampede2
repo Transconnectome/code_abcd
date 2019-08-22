@@ -80,7 +80,7 @@ find ../fs -maxdepth 1 -name \${subjid}_baselineYear1*T1* -type d | cut -d"/" -f
 
 echo %%%%%%%%%%%%%%%% target folder is $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi %%%%%%%%%%%%%%
 
-mkdir -p $ABCD/fs/\$t1/dwi
+mkdir -p $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi
 #dti=`echo $s | sed "s/T1/DTI/g"`
 
 ##### number of dwi runs (supposedly two, but some may have only one run)#######
@@ -118,7 +118,8 @@ if [ \`cat /tmp/tmp_${s} \` -gt 1 ]; then
 
     # cd $ABCD/fs/\$t1/dwi
 
-    mrcat dwi_run-01.mif dwi_run-02.mif mr_dwi.mif
+    mrcat dwi_run-01.mif dwi_run-02.mif \
+          $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/mr_dwi.mif
 
                   # mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.nii \
                   #           ./dwi_run.mif \
@@ -136,7 +137,7 @@ if [ \`cat /tmp/tmp_${s} \` -gt 1 ]; then
     cd /tmp/sub-\$subjid/ses-baselineYear1Arm1/dwi/
 
     mrconvert *run-0*_dwi.nii \
-            mr_dwi.mif \
+            $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/mr_dwi.mif \
             -json_import *run-0*_dwi.json \
             -fslgrad     *run-0*_dwi.bvec \
                          *run-0*_dwi.bval \
@@ -171,6 +172,8 @@ fi
 
 # cd $ABCD/fs/\$t1/dwi
 
+
+cd $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/
 
 # 2. denoising (time:1m)
     echo dwidenoise
@@ -523,7 +526,6 @@ tensor2metric mr_tensor.mif -ad mr_DTI_AD.mif -force -nthreads ${threads}
 tensor2metric mr_tensor.mif -rd mr_DTI_RD.mif -force -nthreads ${threads}
 
 ##benchmark time is ~8M using TACC-SKX-96 threads##############################
-<<<<<<< HEAD
 
  ################################################################################
  ################################### STREAMLINE TRACTOGRAPHY ####################
