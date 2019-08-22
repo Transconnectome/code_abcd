@@ -83,6 +83,8 @@ echo %%%%%%%%%%%%%%%% target folder is $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi
 mkdir -p $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi
 #dti=`echo $s | sed "s/T1/DTI/g"`
 
+rm $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/*
+
 ##### number of dwi runs (supposedly two, but some may have only one run)#######
 ##num_of_dwi=`ls -l \$dwi_folder/\${subjid}\* | egrep -c '^-'`
 ##echo "ls -l \$dwi_folder/\${subjid}* | egrep -c '^-' "
