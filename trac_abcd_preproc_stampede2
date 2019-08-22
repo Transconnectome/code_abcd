@@ -172,8 +172,12 @@ fi
 
 # cd $ABCD/fs/\$t1/dwi
 
-
+###############################################################################
+################# CHANGE WORKING FOLDER TO SCRATCH ############################
+###############################################################################
 cd $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/
+
+
 
 # 2. denoising (time:1m)
     echo dwidenoise
@@ -706,8 +710,8 @@ pigz --best -b 1280 -f -v -T -p ${threads} *mif
 pigz --best -b 1280 -f -v -T -p ${threads} *nii
 # cp -rfv /tmp/${s}/ $ABCD/fs/${s}
 
-cp -rfv /tmp/sub-\$subjid/ses-baselineYear1Arm1/dwi/ \
-        $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`
+# cp -rfv /tmp/sub-\$subjid/ses-baselineYear1Arm1/dwi/ \
+#         $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`
 
 echo "I THINK EVERYTHING IS DONE BY NOW"
 
