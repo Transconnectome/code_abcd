@@ -2,7 +2,7 @@
 
 list=$1
 N=`wc ${1} | awk '{print $1}'`
-threads=136
+threads=48
 #threadsX2=$((${threads}*2))
 
 ABCD=/scratch/03263/jcha9928/data/ABCD/
@@ -125,7 +125,7 @@ if [ \`cat /tmp/tmp_${s} \` -gt 1 ]; then
 
     mrcat dwi_run-01.mif dwi_run-02.mif \
           -force \
-          $ABCD/mrtrix/sub-${s}/mr_dwi.mif      
+          $ABCD/mrtrix/sub-${s}/mr_dwi.mif
 #   $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/mr_dwi.mif
 
                   # mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.nii \
@@ -673,7 +673,7 @@ cat<<EOM > $launch_script
 #SBATCH -J mrtrx_${b}          # Job name
 #%###SBATCH -o ./job/mrtrx_a2.o%j       # Name of stdout output file
 #%###SBATCH -e ./job/mrtrx_a2.e%j       # Name of stderr error file
-#SBATCH -p normal          # Queue (partition) name
+#SBATCH -p skx-normal          # Queue (partition) name
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 #SBATCH -N 251                            # Total # of nodes
 ######SBATCH -N 1970
