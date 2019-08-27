@@ -2,7 +2,7 @@
 
 list=$1
 N=`wc ${1} | awk '{print $1}'`
-threads=204
+threads=136
 #threadsX2=$((${threads}*2))
 
 ABCD=/scratch/03263/jcha9928/data/ABCD/
@@ -25,9 +25,9 @@ do
   LOG=$ABCD_job/preproc.log.stampede2.${s}
   rm -rf $LOG
 
-  subject=`echo $s | cut -d "_" -f1`
-  sess=`echo $s | cut -d "_" -f2`
-
+  #subject=`echo $s | cut -d "_" -f1`
+  #sess=`echo $s | cut -d "_" -f2`
+subject=${s}
 #CMD_sub=$ABCD/code_hbn_stampede/job/cmd2_sub.trac.${s}
 #rm -rf $CMD_sub
 
@@ -80,10 +80,13 @@ find ../fs -maxdepth 1 -name \${subjid}_baselineYear1*T1* -type d | cut -d"/" -f
 
 echo %%%%%%%%%%%%%%%% target folder is $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi %%%%%%%%%%%%%%
 
-mkdir -p $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi
+#mkdir -p $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi
+mkdir -p $ABCD/mrtrix/sub-${s}
+
 #dti=`echo $s | sed "s/T1/DTI/g"`
 
-rm $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/*
+rm -rf $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/
+rm -rf $ABCD/mrtrix/sub-${s}/*
 
 ##### number of dwi runs (supposedly two, but some may have only one run)#######
 ##num_of_dwi=`ls -l \$dwi_folder/\${subjid}\* | egrep -c '^-'`
@@ -110,7 +113,7 @@ if [ \`cat /tmp/tmp_${s} \` -gt 1 ]; then
 
     for i in 1 2
     do
-        mrconvert *run-0\${i}_dwi.nii \
+        mrconvert *run-0\${i}_dwi.nii* \
                 dwi_run-0\${i}.mif \
                 -json_import *run-0\${i}_dwi.json \
                 -fslgrad     *run-0\${i}_dwi.bvec \
@@ -122,7 +125,8 @@ if [ \`cat /tmp/tmp_${s} \` -gt 1 ]; then
 
     mrcat dwi_run-01.mif dwi_run-02.mif \
           -force \
-          $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/mr_dwi.mif
+          $ABCD/mrtrix/sub-${s}/mr_dwi.mif      
+#   $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/mr_dwi.mif
 
                   # mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.nii \
                   #           ./dwi_run.mif \
@@ -139,12 +143,14 @@ if [ \`cat /tmp/tmp_${s} \` -gt 1 ]; then
 
     cd /tmp/sub-\$subjid/ses-baselineYear1Arm1/dwi/
 
-    mrconvert *run-0*_dwi.nii \
-            $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/mr_dwi.mif \
+    mrconvert *run-0*_dwi.nii* \
+            $ABCD/mrtrix/sub-${s}/mr_dwi.mif \
             -json_import *run-0*_dwi.json \
             -fslgrad     *run-0*_dwi.bvec \
                          *run-0*_dwi.bval \
             -force -nthreads ${threads}
+
+#$ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/mr_dwi.mif \
 
                 # for i in 1 2
                 # do
@@ -178,9 +184,9 @@ fi
 ###############################################################################
 ################# CHANGE WORKING FOLDER TO SCRATCH ############################
 ###############################################################################
-cd $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/
+#cd $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/
 
-
+cd $ABCD/mrtrix/sub-${s}
 
 # 2. denoising (time:1m)
     echo dwidenoise
@@ -282,7 +288,7 @@ sleep 0.1
 sleep 0.1
 
             #pigz --fast -b 1280 -f mr_dwi_denoised_gibbs_preproc_biasCorr.mif
-     mrconvert mr_meanb0_nonbiascorr_bet2_mask.nii mr_meanb0_nonbiascorr_bet2_mask.mif \
+     mrconvert mr_meanb0_nonbiascorr_bet2_mask.nii.gz mr_meanb0_nonbiascorr_bet2_mask.mif \
             -force -nthreads ${threads}
 sleep 0.1
 
@@ -294,17 +300,17 @@ sleep 0.1
      	-force mr_meanb0.mif -axis 3 -quiet -nthreads ${threads}
 sleep 0.1
 
-     mrconvert mr_meanb0.mif mr_meanb0.nii -force -quiet -nthreads ${threads}
+     mrconvert mr_meanb0.mif mr_meanb0.nii.gz -force -quiet -nthreads ${threads}
   sleep 0.1
 
      bet2 mr_meanb0 mr_meanb0_bet -m -f 0.2
 sleep 0.1
 
-     mrresize mr_meanb0_bet.nii -voxel 1 mr_meanb0_bet_upsample100.nii \
+     mrresize mr_meanb0_bet.nii.gz -voxel 1.25 mr_meanb0_bet_upsample125.nii.gz \
      	-force -interp sinc -nthreads ${threads} -quiet
 sleep 0.1
 
-     mrresize mr_meanb0_bet_mask.nii -voxel 1 mr_meanb0_bet_mask_upsample100.nii \
+     mrresize mr_meanb0_bet_mask.nii.gz -voxel 1.25 mr_meanb0_bet_mask_upsample125.nii.gz \
      	-force -interp sinc -nthreads ${threads} -quiet
 sleep 0.1
 
@@ -318,30 +324,30 @@ sleep 0.1
 #%% 8. upsampling %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for im in mr_dwi_denoised_gibbs_preproc_biasCorr mr_meanb0_nonbiascorr_bet2_mask mr_meanb0;
 do
-     	mrresize \${im}.mif -voxel 1 -force \${im}_upsample100.mif -interp sinc -nthreads ${threads} -quiet
+     	mrresize \${im}.mif -voxel 1 -force \${im}_upsample125.mif -interp sinc -nthreads ${threads} -quiet
 sleep 0.1
 
 done
 #% make sure to use "DILATED MASK" for FOD generation
 #if [ ! -e mr_dilate_mask.mif ];then
-    dwi2mask mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif - -quiet -nthreads ${threads} | maskfilter - dilate \
-    -npass 3 mr_dilate_mask_upsample100.mif -force -quiet -nthreads ${threads}
-            #&& pigz --fast -b 1280 -f mr_dilate_mask_upsample100.mif
+    dwi2mask mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.mif - -quiet -nthreads ${threads} | maskfilter - dilate \
+    -npass 3 mr_dilate_mask_upsample125.mif -force -quiet -nthreads ${threads}
+            #&& pigz --fast -b 1280 -f mr_dilate_mask_upsample125.mif
 sleep 0.1
 
 
-    dwi2mask mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif mr_mask_upsample100.mif -nthreads ${threads} -force
-            #pigz --fast -b 1280 -f mr_mask_upsample100.mif
+    dwi2mask mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.mif mr_mask_upsample125.mif -nthreads ${threads} -force
+            #pigz --fast -b 1280 -f mr_mask_upsample125.mif
 sleep 0.1
 
 
-    mrconvert mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif \
-            mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.nii -force -nthreads ${threads}
+    mrconvert mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.mif \
+            mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.nii.gz -force -nthreads ${threads}
 sleep 0.1
 
 
-    bet2 mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100 \
-            mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100_bet2 -m -f 0.2 -v
+    bet2 mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125 \
+            mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125_bet2 -m -f 0.2 -v
 sleep 0.1
 
 
@@ -362,20 +368,20 @@ workingdir2=$ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/mri
       #mkdir xfm
       ### flirt
 echo *****NOW GENERATING ANAT2DIFF.FLT.MAT *****
-mrconvert \$workingdir2/brain.mgz brain.nii -stride -1,2,3 -force
+mrconvert \$workingdir2/brain.mgz brain.nii.gz -stride -1,2,3 -force
 sleep 0.1
 
-mrconvert \$workingdir2/aparc+aseg.mgz aparc+aseg.nii -stride -1,2,3 -force
+mrconvert \$workingdir2/aparc+aseg.mgz aparc+aseg.nii.gz -stride -1,2,3 -force
 sleep 0.1
 
-mrconvert \$workingdir2/aparc.a2009s+aseg.mgz aparc.a2009s+aseg.nii -stride -1,2,3 -force
+mrconvert \$workingdir2/aparc.a2009s+aseg.mgz aparc.a2009s+aseg.nii.gz -stride -1,2,3 -force
 sleep 0.1
 
 
 #mrconvert \$workingdir2/brain.mgz brain_anat_orig.nii.gz && orientLAS brain_anat_orig.nii.gz brain_anat.nii.gz
 
-#mrconvert mr_meanb0_upsample100.mif mr_meanb0_upsample100.nii.gz -nthreads ${threads} -force && \
-#            bet2 mr_meanb0_upsample100 mr_meanb0_upsample100_brain -v
+#mrconvert mr_meanb0_upsample125.mif mr_meanb0_upsample125.nii.gz -nthreads ${threads} -force && \
+#            bet2 mr_meanb0_upsample125 mr_meanb0_upsample125_brain -v
 
 #1. rigid transformation
 flirt -in brain -ref mr_meanb0_bet -out brain2diff_flt_dof6 -omat brain2diff_dof6.flt.mat -v -dof 6
@@ -386,7 +392,7 @@ $WORK/code/antswarp brain2diff_flt_dof6 mr_meanb0_bet
 sleep 0.1
 
 #3. 5ttgen
-time 5ttgen freesurfer aparc+aseg.nii 5tt_freesurfer.nii -nocrop -sgm_amyg_hipp -force -nthreads ${threads}
+time 5ttgen freesurfer aparc+aseg.nii.gz 5tt_freesurfer.nii.gz -nocrop -sgm_amyg_hipp -force -nthreads ${threads}
 sleep 0.1
 
 
@@ -396,26 +402,26 @@ flirt -in 5tt_freesurfer -ref mr_meanb0_bet -out 5tt_freesurfer_diff_flt_dof6 \
 sleep 0.1
 
 #4. registering 5ttgen into meanb0-nonlinear
-fslsplit 5tt_freesurfer_diff_flt_dof6.nii tmp_5tt -t
+fslsplit 5tt_freesurfer_diff_flt_dof6.nii.gz tmp_5tt -t
 sleep 0.1
 
 for i in \`seq 0 4\`;
 do
-WarpImageMultiTransform 3 tmp_5tt000\${i}.nii tmp_5tt000\${i}_warped.nii --use-NN \
-	-R mr_meanb0_bet.nii brain2diff_flt_dof62mr_meanb0_bet_synantsWarp.nii brain2diff_flt_dof62mr_meanb0_bet_synantsAffine.txt
+WarpImageMultiTransform 3 tmp_5tt000\${i}.nii.gz tmp_5tt000\${i}_warped.nii.gz --use-NN \
+	-R mr_meanb0_bet.nii.gz brain2diff_flt_dof62mr_meanb0_bet_synantsWarp.nii.gz brain2diff_flt_dof62mr_meanb0_bet_synantsAffine.txt
 sleep 0.1
 
 done
 
-fslmerge -t 5tt_freesurfer_diff_flt_dof6_warped_synant \`imglob tmp_5tt000*_warped.nii\`
+fslmerge -t 5tt_freesurfer_diff_flt_dof6_warped_synant \`imglob tmp_5tt000*_warped.nii.gz\`
 #upsample to 1.25
 sleep 0.1
 
-mrresize 5tt_freesurfer_diff_flt_dof6_warped_synant.nii -voxel 1 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample100.nii \
+mrresize 5tt_freesurfer_diff_flt_dof6_warped_synant.nii.gz -voxel 1 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample125.nii.gz \
 	-force -nthreads ${threads} -interp nearest
 sleep 0.1
 
-cp 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample100.nii 5tt_diff_upsample100.nii
+cp 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample125.nii.gz 5tt_diff_upsample125.nii.gz
 sleep 0.1
 
 #5. also registering aparc/aseg files
@@ -430,34 +436,34 @@ sleep 0.1
 
 
 #5-2. antswarp
-WarpImageMultiTransform 3 aparc+aseg_diff_flt_dof6.nii aparc+aseg_diff_flt_dof6_warped_synant.nii --use-NN \
-	-R mr_meanb0_bet.nii brain2diff_flt_dof62mr_meanb0_bet_synantsWarp.nii brain2diff_flt_dof62mr_meanb0_bet_synantsAffine.txt
+WarpImageMultiTransform 3 aparc+aseg_diff_flt_dof6.nii.gz aparc+aseg_diff_flt_dof6_warped_synant.nii.gz --use-NN \
+	-R mr_meanb0_bet.nii.gz brain2diff_flt_dof62mr_meanb0_bet_synantsWarp.nii.gz brain2diff_flt_dof62mr_meanb0_bet_synantsAffine.txt
 sleep 0.1
 
-WarpImageMultiTransform 3 aparc.a2009s+aseg_diff_flt_dof6.nii aparc.a2009s+aseg_diff_flt_dof6_warped_synant.nii --use-NN \
-	-R mr_meanb0_bet.nii brain2diff_flt_dof62mr_meanb0_bet_synantsWarp.nii brain2diff_flt_dof62mr_meanb0_bet_synantsAffine.txt
+WarpImageMultiTransform 3 aparc.a2009s+aseg_diff_flt_dof6.nii.gz aparc.a2009s+aseg_diff_flt_dof6_warped_synant.nii.gz --use-NN \
+	-R mr_meanb0_bet.nii.gz brain2diff_flt_dof62mr_meanb0_bet_synantsWarp.nii.gz brain2diff_flt_dof62mr_meanb0_bet_synantsAffine.txt
 sleep 0.1
 
 
 #5-3 upsample them
-mrresize aparc+aseg_diff_flt_dof6_warped_synant.nii -voxel 1 aparc+aseg_diff_flt_dof6_warped_synant_upsample100.nii \
+mrresize aparc+aseg_diff_flt_dof6_warped_synant.nii.gz -voxel 1.25 aparc+aseg_diff_flt_dof6_warped_synant_upsample125.nii.gz \
 	-force -nthreads ${threads} -interp nearest -datatype  uint32
 sleep 0.1
 
-mrresize aparc.a2009s+aseg_diff_flt_dof6_warped_synant.nii -voxel 1 aparc.a2009s+aseg_diff_flt_dof6_warped_synant_upsample100.nii \
+mrresize aparc.a2009s+aseg_diff_flt_dof6_warped_synant.nii.gz -voxel 1 aparc.a2009s+aseg_diff_flt_dof6_warped_synant_upsample125.nii.gz \
 	-force -nthreads ${threads} -interp nearest -datatype  uint32
 sleep 0.1
 
 #5tt2gmwmi and label
-5tt2gmwmi 5tt_diff_upsample100.nii -force 5tt_diff_upsample100_gmwmi_mask.mif -force -nthreads ${threads}
+5tt2gmwmi 5tt_diff_upsample125.nii.gz -force 5tt_diff_upsample125_gmwmi_mask.mif -force -nthreads ${threads}
 sleep 0.1
 
-labelconvert aparc+aseg_diff_flt_dof6_warped_synant_upsample100.nii $FREESURFER_HOME/FreeSurferColorLUT.txt \
+labelconvert aparc+aseg_diff_flt_dof6_warped_synant_upsample125.nii.gz $FREESURFER_HOME/FreeSurferColorLUT.txt \
 	/work/03263/jcha9928/stampede2/app/mrtrix3/share/mrtrix3/labelconvert/fs_default.txt \
 	nodes_aparc+aseg.mif -force
 sleep 0.1
 
-labelconvert aparc.a2009s+aseg_diff_flt_dof6_warped_synant_upsample100.nii \
+labelconvert aparc.a2009s+aseg_diff_flt_dof6_warped_synant_upsample125.nii.gz \
              /work/03263/jcha9928/stampede2/app/freesurfer_dev/freesurfer/FreeSurferColorLUT.txt \
 	/work/03263/jcha9928/stampede2/app/mrtrix3/share/mrtrix3/labelconvert/fs_a2009s.txt \
 	nodes_aparc.a2009s+aseg.mif -force
@@ -470,61 +476,61 @@ sleep 0.1
 #if [ ! -e response_wm.txt ]; then
     echo dwi2response
     time dwi2response msmt_5tt \
-		      mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif \
-		      5tt_diff_upsample100.nii \
+		      mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.mif \
+		      5tt_diff_upsample125.nii.gz \
             response_wm.txt response_gm.txt response_csf.txt \
             -voxels response_voxels.mif -force -nthreads ${threads}
 #fi
 
-#time dwi2response dhollander mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif \
+#time dwi2response dhollander mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.mif \
 #            response_wm.txt response_gm.txt response_csf.txt \
-#            -voxels response_voxels.mif -force -nthreads ${threads} -mask mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100_bet2.nii.gz
+#            -voxels response_voxels.mif -force -nthreads ${threads} -mask mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125_bet2.nii.gz
 #%% FOD%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ### FOD estimation (time: 3m)
-#if [ ! -e WM_FODs_upsample100.mif ];then
+#if [ ! -e WM_FODs_upsample125.mif ];then
    echo dwi2fod
 
    ### DWI2FOD only for 2 Tissue Types (except for GM-because it's single shell)
-#   time dwi2fod msmt_csd mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif \
+#   time dwi2fod msmt_csd mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.mif \
 #            response_wm.txt \
-#            WM_FODs_upsample100.mif \
+#            WM_FODs_upsample125.mif \
 #             response_csf.txt csf.mif \
-#            -mask mr_meanb0_bet_mask_upsample100.nii.gz \
+#            -mask mr_meanb0_bet_mask_upsample125.nii.gz \
 #            -force -nthreads ${threads}
 
-   time dwi2fod msmt_csd mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif \
-            response_wm.txt WM_FODs_upsample100.mif \
+   time dwi2fod msmt_csd mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.mif \
+            response_wm.txt WM_FODs_upsample125.mif \
              response_gm.txt gm.mif \
 	     response_csf.txt csf.mif \
-	     -mask mr_meanb0_bet_mask_upsample100.nii \
+	     -mask mr_meanb0_bet_mask_upsample125.nii.gz \
             -force -nthreads ${threads}
 
 
 #fi
 #if [ ! -e tissueRGB.mif ]; then
-   mrconvert WM_FODs_upsample100.mif - -coord 3 0 -nthreads ${threads} -quiet | \
+   mrconvert WM_FODs_upsample125.mif - -coord 3 0 -nthreads ${threads} -quiet | \
    mrcat csf.mif gm.mif - tissueRGB.mif -axis 3 -nthreads ${threads}
 #fi
 ### this is crucial to make the FODs comparable across subjects### (time: 1m)
 
 echo mtnorm *only using WM and CSF but no GM*
-time mtnormalise WM_FODs_upsample100.mif WM_FODs_upsample100_norm.mif \
+time mtnormalise WM_FODs_upsample125.mif WM_FODs_upsample125_norm.mif \
               csf.mif csf_norm.mif \
-              -mask mr_meanb0_bet_mask_upsample100.nii \
+              -mask mr_meanb0_bet_mask_upsample125.nii.gz \
               -nthreads ${threads} -force
 
-mrconvert mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif \
-      mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.nii \
+mrconvert mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.mif \
+      mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.nii.gz \
       -force -nthreads ${threads}
 
-mrconvert mr_dilate_mask_upsample100.mif mr_dilate_mask_upsample100.nii \
+mrconvert mr_dilate_mask_upsample125.mif mr_dilate_mask_upsample125.nii.gz \
       -force -nthreads ${threads}
 
-#dtifit -k mr_dwi_denoised_gibbs_crop_preproc_biasCorr_upsample100.nii.gz -o dtifit \
-#    -m mr_meanb0_bet_mask_upsample100.nii.gz -r dti.bvec -b dti.bval -V
+#dtifit -k mr_dwi_denoised_gibbs_crop_preproc_biasCorr_upsample125.nii.gz -o dtifit \
+#    -m mr_meanb0_bet_mask_upsample125.nii.gz -r dti.bvec -b dti.bval -V
 
-dwi2tensor mr_dwi_denoised_gibbs_preproc_biasCorr_upsample100.mif \
-    -mask mr_meanb0_bet_mask_upsample100.nii mr_tensor.mif \
+dwi2tensor mr_dwi_denoised_gibbs_preproc_biasCorr_upsample125.mif \
+    -mask mr_meanb0_bet_mask_upsample125.nii.gz mr_tensor.mif \
     -force -nthreads ${threads}
 
 tensor2metric mr_tensor.mif -fa mr_DTI_FA.mif -force -nthreads ${threads}
@@ -542,12 +548,12 @@ tensor2metric mr_tensor.mif -rd mr_DTI_RD.mif -force -nthreads ${threads}
  ##tckgen and connectome (time to 1M for tckgen = 5.5m "stampede-Theta");
  ###                      (time to 1M for tckgen = 2.5m "TACC-Stampede2-SKX")
 
- time tckgen WM_FODs_upsample100_norm.mif mr_track_20M.tck \
-   -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample100.nii \
+ time tckgen WM_FODs_upsample125_norm.mif mr_track_10M.tck \
+   -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample125.nii.gz \
    -backtrack \
    -crop_at_gmwmi \
-   -seed_dynamic WM_FODs_upsample100_norm.mif \
-   -angle 22.5 -maxlength 250 -minlength 10 -power 1.0 -select 2M -force \
+   -seed_dynamic WM_FODs_upsample125_norm.mif \
+   -cutoff 0.6 -angle 22.5 -maxlength 250 -minlength 10 -power 1.0 -select 10M -force \
    -nthreads ${threads} && echo 'tckgen done'**********
 
 #
@@ -557,9 +563,9 @@ tensor2metric mr_tensor.mif -rd mr_DTI_RD.mif -force -nthreads ${threads}
 #   ###########################################(5 Min for 1M)#######################
 #   ################################################################################
 #
-   time tcksift -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample100.nii \
-     mr_track_20M.tck WM_FODs_upsample100_norm.mif \
-     mr_track_2M_SIFT.tck -term_number 1M -force -nthreads ${threads} && \
+   time tcksift -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample125.nii.gz \
+     mr_track_10M.tck WM_FODs_upsample125_norm.mif \
+     mr_track_1M_SIFT.tck -term_number 1M -force -nthreads ${threads} && \
      echo 'sift done'*******
 
 
@@ -573,8 +579,8 @@ tensor2metric mr_tensor.mif -rd mr_DTI_RD.mif -force -nthreads ${threads}
      for dti in FA MD AD RD
      do
 
-     tcksample mr_track_2M_SIFT.tck mr_DTI_\${dti}.mif \
-       mr_track_2M_SIFT_mean_\${dti}.csv \
+     tcksample mr_track_1M_SIFT.tck mr_DTI_\${dti}.mif \
+       mr_track_1M_SIFT_mean_\${dti}.csv \
        -stat_tck mean -force -nthreads ${threads}
 
      #tcksample mr_track_global_1e9.tck mr_DTI_\${dti}.mif \
@@ -587,12 +593,12 @@ tensor2metric mr_tensor.mif -rd mr_DTI_RD.mif -force -nthreads ${threads}
      do
      #1.count
      tck2connectome -force -zero_diagonal -nthreads ${threads} \
-                 mr_track_2M_SIFT.tck nodes_\${im}.mif mr_connectome_sift_2M_\${im}_count.csv
+                 mr_track_1M_SIFT.tck nodes_\${im}.mif mr_connectome_sift_1M_\${im}_count.csv
      #tck2connectome -force -zero_diagonal -nthreads ${threads} \
      #            mr_track_global_1e9.tck nodes_\${im}.mif mr_connectome_global1e9_\${im}_count.csv
      #2.length
-     tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_2M_SIFT.tck nodes_\${im}.mif \
-                 mr_connectome_sift_2M_\${im}_length.csv -nthreads ${threads}
+     tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_1M_SIFT.tck nodes_\${im}.mif \
+                 mr_connectome_sift_1M_\${im}_length.csv -nthreads ${threads}
      #tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_global_1e9.tck nodes_\${im}.mif \
      #            mr_connectome_global1e9_\${im}_length.csv -nthreads ${threads}
 
@@ -600,106 +606,18 @@ tensor2metric mr_tensor.mif -rd mr_DTI_RD.mif -force -nthreads ${threads}
         for dti in FA MD AD RD
         do
 
-     tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
-                   -nthreads ${threads} mr_track_2M_SIFT.tck nodes_\${im}.mif \
-                   mr_connectome_sift_2M_\${im}_\${dti}.csv
+     tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_1M_SIFT_mean_\${dti}.csv \
+                   -nthreads ${threads} mr_track_1M_SIFT.tck nodes_\${im}.mif \
+                   mr_connectome_sift_1M_\${im}_\${dti}.csv
 
      #tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
      #             -nthreads ${threads} mr_track_global_1e9.tck nodes_\${im}.mif \
      #              mr_connectome_global1e9_\${im}_\${dti}.csv
         done
      done
-#
-#
-#     ######################################################################################################################################
-#     ######################################################################################################################################
-#     ######################################################################################################################################
-#     ######################################################################################################################################
-=======
 
-################################################################################
-################################### STREAMLINE TRACTOGRAPHY ####################
-###########################################(2.5 Min for 1M)#####################
-###########################################(60 Min for 20M)#####################
-
-##tckgen and connectome (time to 1M for tckgen = 5.5m "stampede-Theta");
-###                      (time to 1M for tckgen = 2.5m "TACC-Stampede2-SKX")
-
-time tckgen WM_FODs_upsample100_norm.mif mr_track_20M.tck \
-  -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample100.nii \
-  -backtrack \
-  -crop_at_gmwmi \
-  -seed_dynamic WM_FODs_upsample100_norm.mif \
-  -angle 22.5 -maxlength 250 -minlength 10 -power 1.0 -select 20M -force \
-  -nthreads ${threads} && echo 'tckgen done'**********
-
-
-
-  ################################################################################
-  ################################### TCKSIFT ####################
-  ###########################################(5 Min for 1M)#######################
-  ################################################################################
-
-  time tcksift -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample100.nii \
-    mr_track_20M.tck WM_FODs_upsample100_norm.mif \
-    mr_track_2M_SIFT.tck -term_number 1M -force -nthreads ${threads} && \
-    echo 'sift done'*******
-
-
-    ################################################################################
-    ################################################################################
-    ################################### tck2connectome #############################
-    ################################################################################
-    ################################################################################
-
-    ## FA, MD, AD, RD (L2+L3/2)
-    for dti in FA MD AD RD
-    do
-
-    tcksample mr_track_2M_SIFT.tck mr_DTI_\${dti}.mif \
-      mr_track_2M_SIFT_mean_\${dti}.csv \
-      -stat_tck mean -force -nthreads ${threads}
-
-    #tcksample mr_track_global_1e9.tck mr_DTI_\${dti}.mif \
-    #  mr_track_global_1e9_mean_\${dti}.csv \
-    #   -stat_tck mean -force -nthreads ${threads}
-    done
-
-
-    for im in aparc+aseg aparc.a2009s+aseg
-    do
-    #1.count
-    tck2connectome -force -zero_diagonal -nthreads ${threads} \
-                mr_track_2M_SIFT.tck nodes_\${im}.mif mr_connectome_sift_2M_\${im}_count.csv
-    #tck2connectome -force -zero_diagonal -nthreads ${threads} \
-    #            mr_track_global_1e9.tck nodes_\${im}.mif mr_connectome_global1e9_\${im}_count.csv
-    #2.length
-    tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_2M_SIFT.tck nodes_\${im}.mif \
-                mr_connectome_sift_2M_\${im}_length.csv -nthreads ${threads}
-    #tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_global_1e9.tck nodes_\${im}.mif \
-    #            mr_connectome_global1e9_\${im}_length.csv -nthreads ${threads}
-
-    #3-7: FA MD M0 AD RD
-       for dti in FA MD AD RD
-       do
-
-    tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
-                  -nthreads ${threads} mr_track_2M_SIFT.tck nodes_\${im}.mif \
-                  mr_connectome_sift_2M_\${im}_\${dti}.csv
-
-    #tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
-    #              -nthreads ${threads} mr_track_global_1e9.tck nodes_\${im}.mif \
-    #              mr_connectome_global1e9_\${im}_\${dti}.csv
-       done
-    done
-
-
-    ######################################################################################################################################
-    ######################################################################################################################################
-    ######################################################################################################################################
-    ######################################################################################################################################
->>>>>>> 829f980d9861dfb11fc675131ea913ef9da0c4a4
-
+  ####################################################################################################################################
+# END OF TRACTOGRAPHY    ######################################################################################################################################
 
 
 #done
@@ -722,8 +640,9 @@ EOC
 
 ################################################## END OF CMD##########################################################
 chmod +x $CMD
-echo "$CMD > ./job/output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1" >> $CMD_batch
-
+#echo "$CMD > ./job/output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1" >> $CMD_batch
+#echo "$CMD > $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1" >> $CMD_batch
+echo "$CMD > $ABCD/mrtrix/sub-${s}/output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1" >> $CMD_batch
 done
 
 
@@ -759,7 +678,7 @@ cat<<EOM > $launch_script
 #SBATCH -N 251                            # Total # of nodes
 ######SBATCH -N 1970
 #SBATCH --ntasks-per-node 1            # Total # of mpi tasks
-#SBATCH -t 12:00:00        # Run time (hh:mm:ss)
+#SBATCH -t 24:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
 #SBATCH --mail-type=all    # Send email at begin and end of job
 #SBATCH -A TG-IBN180001
