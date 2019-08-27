@@ -324,7 +324,7 @@ sleep 0.1
 #%% 8. upsampling %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for im in mr_dwi_denoised_gibbs_preproc_biasCorr mr_meanb0_nonbiascorr_bet2_mask mr_meanb0;
 do
-     	mrresize \${im}.mif -voxel 1 -force \${im}_upsample125.mif -interp sinc -nthreads ${threads} -quiet
+     	mrresize \${im}.mif -voxel 1.25 -force \${im}_upsample125.mif -interp sinc -nthreads ${threads} -quiet
 sleep 0.1
 
 done
@@ -417,7 +417,7 @@ fslmerge -t 5tt_freesurfer_diff_flt_dof6_warped_synant \`imglob tmp_5tt000*_warp
 #upsample to 1.25
 sleep 0.1
 
-mrresize 5tt_freesurfer_diff_flt_dof6_warped_synant.nii.gz -voxel 1 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample125.nii.gz \
+mrresize 5tt_freesurfer_diff_flt_dof6_warped_synant.nii.gz -voxel 1.25 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample125.nii.gz \
 	-force -nthreads ${threads} -interp nearest
 sleep 0.1
 
@@ -450,7 +450,7 @@ mrresize aparc+aseg_diff_flt_dof6_warped_synant.nii.gz -voxel 1.25 aparc+aseg_di
 	-force -nthreads ${threads} -interp nearest -datatype  uint32
 sleep 0.1
 
-mrresize aparc.a2009s+aseg_diff_flt_dof6_warped_synant.nii.gz -voxel 1 aparc.a2009s+aseg_diff_flt_dof6_warped_synant_upsample125.nii.gz \
+mrresize aparc.a2009s+aseg_diff_flt_dof6_warped_synant.nii.gz -voxel 1.25 aparc.a2009s+aseg_diff_flt_dof6_warped_synant_upsample125.nii.gz \
 	-force -nthreads ${threads} -interp nearest -datatype  uint32
 sleep 0.1
 
