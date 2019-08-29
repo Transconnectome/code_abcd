@@ -74,7 +74,8 @@ cd \$dwi_folder
 
 # t1=`echo $s|cut -d"." -f1`
 
-subjid=`echo $s | cut -d"_" -f1`
+#subjid=`echo $s | cut -d"_" -f1`
+subjid=$s
 # t1=`find . -name \${subjid}_baseline\*T1\* -type d`
 find ../fs -maxdepth 1 -name \${subjid}_baselineYear1*T1* -type d | cut -d"/" -f3 > /tmp/tmp_${s}_t1name
 
