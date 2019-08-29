@@ -85,8 +85,13 @@ mkdir -p $ABCD/mrtrix/sub-${s}
 
 #dti=`echo $s | sed "s/T1/DTI/g"`
 
-rm -rf $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/
-rm -rf $ABCD/mrtrix/sub-${s}/*
+rm -rfv $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/
+#rm -rfv $ABCD/mrtrix/sub-${s}/*
+find $ABCD/mrtrix/sub-${s}/ ! \
+    -name 'output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID}' \
+    -type f \
+    -exec rm -v {} +
+
 
 ##### number of dwi runs (supposedly two, but some may have only one run)#######
 ##num_of_dwi=`ls -l \$dwi_folder/\${subjid}\* | egrep -c '^-'`
