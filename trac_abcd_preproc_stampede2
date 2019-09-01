@@ -559,9 +559,9 @@ tensor2metric mr_tensor.mif -rd mr_DTI_RD.mif -force -nthreads ${threads}
    -backtrack \
    -crop_at_gmwmi \
    -seed_dynamic WM_FODs_upsample125_norm.mif \
-   -cutoff 0.6 -angle 22.5 -maxlength 250 -minlength 10 -power 1.0 -select 10M -force \
+   -angle 22.5 -maxlength 250 -minlength 10 -power 1.0 -select 10M -force \
    -nthreads ${threads} && echo 'tckgen done'**********
-
+#-cutoff 0.6 
 #
 #
 #   ################################################################################
