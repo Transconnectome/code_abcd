@@ -646,9 +646,9 @@ EOC
 
 ################################################## END OF CMD##########################################################
 chmod +x $CMD
-#echo "$CMD > ./job/output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1" >> $CMD_batch
+echo "$CMD > ./job/output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1" >> $CMD_batch
 #echo "$CMD > $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1" >> $CMD_batch
-echo "$CMD > $ABCD/mrtrix/sub-${s}/output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1" >> $CMD_batch
+#echo "$CMD > $ABCD/mrtrix/sub-${s}/output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1" >> $CMD_batch
 done
 
 
