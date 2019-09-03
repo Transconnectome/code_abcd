@@ -555,7 +555,7 @@ tensor2metric mr_tensor.mif -rd mr_DTI_RD.mif -force -nthreads ${threads}
  ###                      (time to 1M for tckgen = 2.5m "TACC-Stampede2-SKX")
 
  time tckgen WM_FODs_upsample125_norm.mif \
-   /tmp/mr_track_10M_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID}.tck \
+   $SCRATCH/tmp/mr_track_10M_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID}.tck \
    -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample125.nii.gz \
    -backtrack \
    -crop_at_gmwmi \
@@ -571,7 +571,7 @@ tensor2metric mr_tensor.mif -rd mr_DTI_RD.mif -force -nthreads ${threads}
 #   ################################################################################
 #
    time tcksift -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample125.nii.gz \
-     /tmp/mr_track_10M_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID}.tck \
+     $SCRATCH/tmp/mr_track_10M_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID}.tck \
      WM_FODs_upsample125_norm.mif \
      mr_track_1M_SIFT.tck -term_number 1M -force -nthreads ${threads} && \
      echo 'sift done'*******
