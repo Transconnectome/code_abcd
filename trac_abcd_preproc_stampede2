@@ -2,7 +2,7 @@
 
 list=$1
 N=`wc ${1} | awk '{print $1}'`
-threads=48
+threads=4
 #threadsX2=$((${threads}*2))
 
 ABCD=/scratch/03263/jcha9928/data/ABCD/
@@ -561,7 +561,7 @@ tensor2metric mr_tensor.mif -rd mr_DTI_RD.mif -force -nthreads ${threads}
    -seed_dynamic WM_FODs_upsample125_norm.mif \
    -angle 22.5 -maxlength 250 -minlength 10 -power 1.0 -select 10M -force \
    -nthreads ${threads} && echo 'tckgen done'**********
-#-cutoff 0.6 
+#-cutoff 0.6
 #
 #
 #   ################################################################################
@@ -683,7 +683,7 @@ cat<<EOM > $launch_script
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 #SBATCH -N 251                            # Total # of nodes
 ######SBATCH -N 1970
-#SBATCH --ntasks-per-node 1            # Total # of mpi tasks
+#SBATCH --ntasks-per-node 24            # Total # of mpi tasks
 #SBATCH -t 24:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
 #SBATCH --mail-type=all    # Send email at begin and end of job
