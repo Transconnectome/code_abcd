@@ -52,41 +52,41 @@ mkdir -p \${workingdir}
 cd \${workingdir}
 echo current directory is \`pwd\`
 
-#%% 1. setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# cp -f $ABCD/fs/${s}/dwi/*dir_dwi.nii.gz ./dti.nii.gz
-# cp -f $ABCD/fs/${s}/dwi/*dir_dwi.bvec ./dti.bvec
-# cp -f $ABCD/fs/${s}/dwi/*dir_dwi.bval ./dti.bval
-# cp -f $ABCD/fs/${s}/dwi/*dir_dwi.json ./dti.json
-#
-# cp -f $ABCD/fs/${s}/fmap/*AP_acq-dwi_epi.json ./dwi_fmap_AP.json
-# cp -f $ABCD/fs/${s}/fmap/*AP_acq-dwi_epi.nii.gz ./dwi_fmap_AP.nii.gz
-# cp -f $ABCD/fs/${s}/fmap/*PA_acq-dwi_epi.json ./dwi_fmap_PA.json
-# cp -f $ABCD/fs/${s}/fmap/*PA_acq-dwi_epi.nii.gz ./dwi_fmap_PA.nii.gz
+                        #%% 1. setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                        # cp -f $ABCD/fs/${s}/dwi/*dir_dwi.nii.gz ./dti.nii.gz
+                        # cp -f $ABCD/fs/${s}/dwi/*dir_dwi.bvec ./dti.bvec
+                        # cp -f $ABCD/fs/${s}/dwi/*dir_dwi.bval ./dti.bval
+                        # cp -f $ABCD/fs/${s}/dwi/*dir_dwi.json ./dti.json
+                        #
+                        # cp -f $ABCD/fs/${s}/fmap/*AP_acq-dwi_epi.json ./dwi_fmap_AP.json
+                        # cp -f $ABCD/fs/${s}/fmap/*AP_acq-dwi_epi.nii.gz ./dwi_fmap_AP.nii.gz
+                        # cp -f $ABCD/fs/${s}/fmap/*PA_acq-dwi_epi.json ./dwi_fmap_PA.json
+                        # cp -f $ABCD/fs/${s}/fmap/*PA_acq-dwi_epi.nii.gz ./dwi_fmap_PA.nii.gz
 
-#cp /ifs/scratch/pimri/posnerlab/1anal/adni/data/nii/${s}_*DTI.bvec_tp ./dti.bvec_tp
-#cp /ifs/scratch/pimri/posnerlab/1anal/adni/data/nii/${s}_*DTI.bval_tp ./dti.bval_tp
+                        #cp /ifs/scratch/pimri/posnerlab/1anal/adni/data/nii/${s}_*DTI.bvec_tp ./dti.bvec_tp
+                        #cp /ifs/scratch/pimri/posnerlab/1anal/adni/data/nii/${s}_*DTI.bval_tp ./dti.bval_tp
 
-#dwi_folder=$ABCD/data/${s}/ses-baselineYear1Arm1/dwi/
+                        #dwi_folder=$ABCD/data/${s}/ses-baselineYear1Arm1/dwi/
 
 dwi_folder=$ABCD/data_DTI_release2_201905
 
 cd \$dwi_folder
 
-# t1=`echo $s|cut -d"." -f1`
+                                  # t1=`echo $s|cut -d"." -f1`
 
-#subjid=`echo $s | cut -d"_" -f1`
+                                  #subjid=`echo $s | cut -d"_" -f1`
 subjid=$s
-# t1=`find . -name \${subjid}_baseline\*T1\* -type d`
+                                  # t1=`find . -name \${subjid}_baseline\*T1\* -type d`
+
 find ../fs -maxdepth 1 -name \${subjid}_baselineYear1*T1* -type d | cut -d"/" -f3 > /tmp/tmp_${s}_t1name
 
-echo %%%%%%%%%%%%%%%% target folder is $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi %%%%%%%%%%%%%%
+echo %%%%%%%%%%%%%%%% target folder is $ABCD/fs/\`head -n 1 /tmp/tmp_${s}_t1name\`/dwi %%%%%%%%%%%%%%
 
-#mkdir -p $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi
 mkdir -p $ABCD/mrtrix/sub-${s}
 
 #dti=`echo $s | sed "s/T1/DTI/g"`
 
-rm -rfv $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/
+rm -rfv $ABCD/fs/\`head -n 1 /tmp/tmp_${s}_t1name\`/dwi/
 #rm -rfv $ABCD/mrtrix/sub-${s}/*
 find $ABCD/mrtrix/sub-${s}/ ! \
     -name 'output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID}' \
@@ -94,9 +94,9 @@ find $ABCD/mrtrix/sub-${s}/ ! \
     -exec rm -v {} +
 
 
-##### number of dwi runs (supposedly two, but some may have only one run)#######
-##num_of_dwi=`ls -l \$dwi_folder/\${subjid}\* | egrep -c '^-'`
-##echo "ls -l \$dwi_folder/\${subjid}* | egrep -c '^-' "
+                              ##### number of dwi runs (supposedly two, but some may have only one run)#######
+                              ##num_of_dwi=`ls -l \$dwi_folder/\${subjid}\* | egrep -c '^-'`
+                              ##echo "ls -l \$dwi_folder/\${subjid}* | egrep -c '^-' "
 echo "dwi_folder is" \$dwi_folder
 
       # dwi=\`find \$dwi_folder -type f -name \${subjid}* \`
@@ -132,7 +132,7 @@ if [ \`cat /tmp/tmp_${s} \` -gt 1 ]; then
     mrcat dwi_run-01.mif dwi_run-02.mif \
           -force \
           $ABCD/mrtrix/sub-${s}/mr_dwi.mif
-#   $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/mr_dwi.mif
+#   $ABCD/fs/\`head -n 1 /tmp/tmp_${s}_t1name\`/dwi/mr_dwi.mif
 
                   # mrconvert \$dwi_folder/${s}_ses-baselineYear1Arm1_run-0*_dwi.nii \
                   #           ./dwi_run.mif \
@@ -156,7 +156,7 @@ if [ \`cat /tmp/tmp_${s} \` -gt 1 ]; then
                          *run-0*_dwi.bval \
             -force -nthreads ${threads}
 
-#$ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/mr_dwi.mif \
+#$ABCD/fs/\`head -n 1 /tmp/tmp_${s}_t1name\`/dwi/mr_dwi.mif \
 
                 # for i in 1 2
                 # do
@@ -190,7 +190,7 @@ fi
 ###############################################################################
 ################# CHANGE WORKING FOLDER TO SCRATCH ############################
 ###############################################################################
-#cd $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/
+#cd $ABCD/fs/\`head -n 1 /tmp/tmp_${s}_t1name\`/dwi/
 
 cd $ABCD/mrtrix/sub-${s}
 
@@ -363,11 +363,11 @@ sleep 0.1
 echo ***** NOW 5TTGEN *****
 
 #../fs/$subjid*
-#../fs/\`cat /tmp/tmp_${s}_t1name\`/mri
+#../fs/\`head -n 1 /tmp/tmp_${s}_t1name\`/mri
 
 SUBJECT=\$subjid
 #workingdir2=$ABCD/fs/\$subjid*/mri
-workingdir2=$ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/mri
+workingdir2=$ABCD/fs/\`head -n 1 /tmp/tmp_${s}_t1name\`/mri
 
       # workingdir3=$ABCD/fs/${s}/anat
       #cd /lus/theta-fs0/projects/AD_Brain_Imaging/anal/adni/fs/\${SUBJECT}/dmri2
@@ -640,7 +640,7 @@ pigz --best -b 1280 -f -v -T -p ${threads} *nii
 # cp -rfv /tmp/${s}/ $ABCD/fs/${s}
 
 # cp -rfv /tmp/sub-\$subjid/ses-baselineYear1Arm1/dwi/ \
-#         $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`
+#         $ABCD/fs/\`head -n 1 /tmp/tmp_${s}_t1name\`
 
 echo "I THINK EVERYTHING IS DONE BY NOW"
 
@@ -649,7 +649,7 @@ EOC
 ################################################## END OF CMD##########################################################
 chmod +x $CMD
 echo "$CMD > ./job/output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1" >> $CMD_batch
-#echo "$CMD > $ABCD/fs/\`cat /tmp/tmp_${s}_t1name\`/dwi/output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1" >> $CMD_batch
+#echo "$CMD > $ABCD/fs/\`head -n 1 /tmp/tmp_${s}_t1name\`/dwi/output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1" >> $CMD_batch
 #echo "$CMD > $ABCD/mrtrix/sub-${s}/output_${s}_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID} 2>&1" >> $CMD_batch
 done
 
