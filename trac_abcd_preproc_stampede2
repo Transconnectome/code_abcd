@@ -662,7 +662,7 @@ done
 rm batch_abcd_*
 n_list=`wc ${list} | awk '{print $1}'`
 # n_split=$((n_list/256+1))
-n_split=$((251*1))
+n_split=$((32*24))
 # n_split=1971
 split -l $n_split $CMD_batch batch_abcd_
 
@@ -683,7 +683,7 @@ cat<<EOM > $launch_script
 #%###SBATCH -e ./job/mrtrx_a2.e%j       # Name of stderr error file
 #SBATCH -p skx-normal          # Queue (partition) name
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
-#SBATCH -N 251                            # Total # of nodes
+#SBATCH -N 32                            # Total # of nodes
 ######SBATCH -N 1970
 #SBATCH --ntasks-per-node 24            # Total # of mpi tasks
 #SBATCH -t 20:00:00        # Run time (hh:mm:ss)
@@ -706,5 +706,5 @@ export LAUNCHER_JOB_FILE=`echo $b`
 \$LAUNCHER_DIR/paramrun
 EOM
 
-echo sbatch $launch_script
+sbatch $launch_script
 done
