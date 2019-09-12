@@ -2,7 +2,7 @@
 
 list=$1
 N=`wc ${1} | awk '{print $1}'`
-threads=4
+threads=12
 #threadsX2=$((${threads}*2))
 
 ABCD=/scratch/03263/jcha9928/data/ABCD/
@@ -172,7 +172,7 @@ done
 rm batch_abcd_*
 n_list=`wc ${list} | awk '{print $1}'`
 # n_split=$((n_list/256+1))
-n_split=$((251*1))
+n_split=$((251*8))
 # n_split=1971
 split -l $n_split $CMD_batch batch_abcd_
 
@@ -194,8 +194,8 @@ cat<<EOM > $launch_script
 #SBATCH -p skx-normal          # Queue (partition) name
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 #SBATCH -N 251                            # Total # of nodes
-#SBATCH --ntasks-per-node 24            # Total # of mpi tasks
-#SBATCH -t 24:00:00        # Run time (hh:mm:ss)
+#SBATCH --ntasks-per-node 8            # Total # of mpi tasks
+#SBATCH -t 12:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
 #SBATCH --mail-type=all    # Send email at begin and end of job
 #SBATCH -A TG-IBN180001
