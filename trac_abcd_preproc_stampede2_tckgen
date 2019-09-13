@@ -195,7 +195,7 @@ cat<<EOM > $launch_script
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 #SBATCH -N 251                            # Total # of nodes
 #SBATCH --ntasks-per-node 8            # Total # of mpi tasks
-#SBATCH -t 12:00:00        # Run time (hh:mm:ss)
+#SBATCH -t 6:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
 #SBATCH --mail-type=all    # Send email at begin and end of job
 #SBATCH -A TG-IBN180001
