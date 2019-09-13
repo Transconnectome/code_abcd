@@ -172,7 +172,7 @@ done
 rm batch_abcd_*
 n_list=`wc ${list} | awk '{print $1}'`
 # n_split=$((n_list/256+1))
-n_split=$((251*8))
+n_split=$((251*1))
 # n_split=1971
 split -l $n_split $CMD_batch batch_abcd_
 
