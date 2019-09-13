@@ -172,7 +172,7 @@ done
 rm batch_abcd_*
 n_list=`wc ${list} | awk '{print $1}'`
 # n_split=$((n_list/256+1))
-n_split=$((251*1))
+n_split=$((128*8))
 # n_split=1971
 split -l $n_split $CMD_batch batch_abcd_
 
@@ -193,9 +193,9 @@ cat<<EOM > $launch_script
 #%###SBATCH -e ./job/mrtrx_a2.e%j       # Name of stderr error file
 #SBATCH -p skx-normal          # Queue (partition) name
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
-#SBATCH -N 251                            # Total # of nodes
+#SBATCH -N 128                            # Total # of nodes
 #SBATCH --ntasks-per-node 8            # Total # of mpi tasks
-#SBATCH -t 6:00:00        # Run time (hh:mm:ss)
+#SBATCH -t 8:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
 #SBATCH --mail-type=all    # Send email at begin and end of job
 #SBATCH -A TG-IBN180001
