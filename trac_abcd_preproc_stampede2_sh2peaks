@@ -119,7 +119,7 @@ cat<<EOM > $launch_script
 #SBATCH -J mrtrx_${b}          # Job name
 #%###SBATCH -o ./job/mrtrx_a2.o%j       # Name of stdout output file
 #%###SBATCH -e ./job/mrtrx_a2.e%j       # Name of stderr error file
-#SBATCH -p skx-normal          # Queue (partition) name
+#SBATCH -p normal          # Queue (partition) name
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 #SBATCH -N 256                            # Total # of nodes
 #SBATCH --ntasks-per-node 8            # Total # of mpi tasks
