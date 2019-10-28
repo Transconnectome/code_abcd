@@ -39,11 +39,11 @@ aparcstats2table_abcd --hemi rh --subjects $list --parc aparc.a2009s --meas volu
 aparcstats2table_abcd --hemi rh --subjects $list --parc aparc.a2009s --meas thickness --skip -t rh.a2009s.thickness.txt
 aparcstats2table_abcd --hemi rh --subjects $list --parc aparc.a2009s --meas area --skip -t rh.a2009s.area.txt
 aparcstats2table_abcd --hemi rh --subjects $list --parc aparc.a2009s --meas meancurv --skip -t rh.a2009s.meancurv.txt
-aparcstats2table_abcd --hemi lh --subjects $list --parc BA --meas volume --skip -t lh.BA.volume.txt
-aparcstats2table_abcd --hemi lh --subjects $list --parc BA --meas thickness --skip -t lh.BA.thickness.txt
-aparcstats2table_abcd --hemi lh --subjects $list --parc BA --meas area --skip -t lh.BA.area.txt
-aparcstats2table_abcd --hemi lh --subjects $list --parc BA --meas meancurv --skip -t lh.BA.meancurv.txt
-aparcstats2table_abcd --hemi rh --subjects $list --parc BA --meas volume --skip -t rh.BA.volume.txt
-aparcstats2table_abcd --hemi rh --subjects $list --parc BA --meas thickness --skip -t rh.BA.thickness.txt
-aparcstats2table_abcd --hemi rh --subjects $list --parc BA --meas area --skip -t rh.BA.area.txt
-aparcstats2table_abcd --hemi rh --subjects $list --parc BA --meas meancurv --skip -t rh.BA.meancurv.txt
+# aparcstats2table_abcd --hemi lh --subjects $list --parc BA --meas volume --skip -t lh.BA.volume.txt
+# aparcstats2table_abcd --hemi lh --subjects $list --parc BA --meas thickness --skip -t lh.BA.thickness.txt
+# aparcstats2table_abcd --hemi lh --subjects $list --parc BA --meas area --skip -t lh.BA.area.txt
+# aparcstats2table_abcd --hemi lh --subjects $list --parc BA --meas meancurv --skip -t lh.BA.meancurv.txt
+# aparcstats2table_abcd --hemi rh --subjects $list --parc BA --meas volume --skip -t rh.BA.volume.txt
+# aparcstats2table_abcd --hemi rh --subjects $list --parc BA --meas thickness --skip -t rh.BA.thickness.txt
+# aparcstats2table_abcd --hemi rh --subjects $list --parc BA --meas area --skip -t rh.BA.area.txt
+# aparcstats2table_abcd --hemi rh --subjects $list --parc BA --meas meancurv --skip -t rh.BA.meancurv.txt
