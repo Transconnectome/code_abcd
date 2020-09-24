@@ -51,12 +51,12 @@ cd $ABCD/mrtrix/sub-${s}
 
 labelconvert aparc+aseg_diff_flt_dof6_warped_synant_upsample125.nii.gz $FREESURFER_HOME/FreeSurferColorLUT.txt \
 	/work/03263/jcha9928/stampede2/app/mrtrix3/share/mrtrix3/labelconvert/fs_default.txt \
-	nodes_aparc+aseg.mif -force
+	nodes_aparc+aseg_v2.mif -force
 sleep 0.1
 labelconvert aparc.a2009s+aseg_diff_flt_dof6_warped_synant_upsample125.nii.gz \
              /work/03263/jcha9928/stampede2/app/freesurfer_dev/freesurfer/FreeSurferColorLUT.txt \
 	/work/03263/jcha9928/stampede2/app/mrtrix3/share/mrtrix3/labelconvert/fs_a2009s.txt \
-	nodes_aparc.a2009s+aseg.mif -force
+	nodes_aparc.a2009s+aseg_v2.mif -force
 sleep 0.1
 
 
@@ -66,31 +66,23 @@ sleep 0.1
 ################################################################################
 ################################################################################
      ## FA, MD, AD, RD (L2+L3/2)
-     for dti in FA MD AD RD
-     do
-     tcksample mr_track_1M_SIFT.tck mr_DTI_\${dti}.mif.gz \
-       mr_track_1M_SIFT_mean_\${dti}.csv \
-       -stat_tck mean -force -nthreads ${threads}
-     #tcksample mr_track_global_1e9.tck mr_DTI_\${dti}.mif.gz \
-     #  mr_track_global_1e9_mean_\${dti}.csv \
-     #   -stat_tck mean -force -nthreads ${threads}
-     done
-     for im in aparc+aseg aparc.a2009s+aseg
+     
+     for im in aparc+aseg_v2 aparc.a2009s+aseg_v2
      do
      #1.count
      tck2connectome -force -zero_diagonal -nthreads ${threads} \
-                 mr_track_1M_SIFT.tck nodes_\${im}.mif.gz mr_connectome_sift_1M_\${im}_count.csv
+                 mr_track_1M_SIFT.tck nodes_\${im}.mif.gz mr_connectome_sift_1M_\${im}_count_v2.csv
      #tck2connectome -force -zero_diagonal -nthreads ${threads} \
      #            mr_track_global_1e9.tck nodes_\${im}.mif.gz mr_connectome_global1e9_\${im}_count.csv
      #2.length
      tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_1M_SIFT.tck nodes_\${im}.mif.gz \
-                 mr_connectome_sift_1M_\${im}_length.csv -nthreads ${threads}
+                 mr_connectome_sift_1M_\${im}_length_v2.csv -nthreads ${threads}
      #tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_global_1e9.tck nodes_\${im}.mif.gz \
      #            mr_connectome_global1e9_\${im}_length.csv -nthreads ${threads}
      #3-7: FA MD M0 AD RD
         for dti in FA MD AD RD
         do
-     tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_1M_SIFT_mean_\${dti}.csv \
+     tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_1M_SIFT_mean_\${dti}_v2.csv \
                    -nthreads ${threads} mr_track_1M_SIFT.tck nodes_\${im}.mif.gz \
                    mr_connectome_sift_1M_\${im}_\${dti}.csv
      #tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
@@ -152,7 +144,7 @@ cat<<EOM > $launch_script
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 #SBATCH -N 128                            # Total # of nodes
 #SBATCH --ntasks-per-node 8            # Total # of mpi tasks
-#SBATCH -t 8:00:00        # Run time (hh:mm:ss)
+#SBATCH -t 1:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
 #SBATCH --mail-type=all    # Send email at begin and end of job
 #SBATCH -A TG-IBN180001
