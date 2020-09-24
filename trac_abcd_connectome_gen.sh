@@ -5,7 +5,7 @@ N=`wc ${1} | awk '{print $1}'`
 threads=12
 #threadsX2=$((${threads}*2))
 
-ABCD=/scratch/03263/jcha9928/data/ABCD/
+ABCD=/scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/
 ABCD_code=$ABCD/code_abcd
 ABCD_job=$ABCD_code/job
 #DATA_target=$STERN/image03/dwi_eddy
