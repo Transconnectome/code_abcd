@@ -82,7 +82,7 @@ sleep 0.1
      #3-7: FA MD M0 AD RD
         for dti in FA MD AD RD
         do
-     tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_1M_SIFT_mean_\${dti}_v2.csv \
+     tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_1M_SIFT_mean_\${dti}.csv \
                    -nthreads ${threads} mr_track_1M_SIFT.tck nodes_\${im}.mif.gz \
                    mr_connectome_sift_1M_\${im}_\${dti}.csv
      #tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
