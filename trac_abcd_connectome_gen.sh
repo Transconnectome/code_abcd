@@ -10,7 +10,7 @@ ABCD_code=$ABCD/code_abcd
 ABCD_job=$ABCD_code/job
 #DATA_target=$STERN/image03/dwi_eddy
 
-CMD_batch=$ABCD_code/cmd1.ABCD.batch.tckgen.${list}
+CMD_batch=$ABCD_code/cmd1.ABCD.batch.connectome.${list}
 rm -rf $CMD_batch
 
 
