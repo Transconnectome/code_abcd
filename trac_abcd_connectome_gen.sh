@@ -32,7 +32,7 @@ subject=${s}
 #rm -rf $CMD_sub
 
 
-#echo ${SUBJECT}
+echo ${SUBJECT}
 
 cat<<EOC >$CMD
 #!/bin/bash
