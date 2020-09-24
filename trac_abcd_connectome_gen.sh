@@ -49,6 +49,16 @@ export ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS
 ###############################################################################
 cd $ABCD/mrtrix/sub-${s}
 
+labelconvert aparc+aseg_diff_flt_dof6_warped_synant_upsample125.nii.gz $FREESURFER_HOME/FreeSurferColorLUT.txt \
+	/work/03263/jcha9928/stampede2/app/mrtrix3/share/mrtrix3/labelconvert/fs_default.txt \
+	nodes_aparc+aseg.mif -force
+sleep 0.1
+labelconvert aparc.a2009s+aseg_diff_flt_dof6_warped_synant_upsample125.nii.gz \
+             /work/03263/jcha9928/stampede2/app/freesurfer_dev/freesurfer/FreeSurferColorLUT.txt \
+	/work/03263/jcha9928/stampede2/app/mrtrix3/share/mrtrix3/labelconvert/fs_a2009s.txt \
+	nodes_aparc.a2009s+aseg.mif -force
+sleep 0.1
+
 
 ################################################################################
 ################################################################################
