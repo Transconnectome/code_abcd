@@ -161,5 +161,5 @@ export LAUNCHER_JOB_FILE=`echo $b`
 \$LAUNCHER_DIR/paramrun
 EOM
 
-sbatch $launch_script
+#sbatch $launch_script
 done
