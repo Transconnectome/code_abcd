@@ -51,7 +51,7 @@ cat<<EOC >$CMD
 source ~/.bashrc
 
 #tar -xzvf $ABCD/data_T1_release2_201905/${s} -C /tmp
-tar -xvf $ABCD/data_T2_201908/${s}*.tgz -C /tmp
+#tar -xvf $ABCD/data_T2_201908/${s}*.tgz -C /tmp
 
 #T1w=\`find /tmp/*$SUBJECT -name "*_T1w.nii" | head -n 1\`
 
@@ -66,27 +66,31 @@ tar -xvf $ABCD/data_T2_201908/${s}*.tgz -C /tmp
 
 sleep $[ ( $RANDOM % 10 )  + 1 ]s
 
-find $ABCD/fs -maxdepth 1 \
-        -name *${SUBJECT}*_baselineYear1Arm1_ABCD-MPROC-T1_* -type d | cut -d"/" -f9 | tail -n1 > /tmp/tmp_t1name_${SUBJECT}
+#find $ABCD/fs -maxdepth 1 \
+#        -name *${SUBJECT}*_baselineYear1Arm1_ABCD-MPROC-T1_* -type d | cut -d"/" -f9 | tail -n1 > /tmp/tmp_t1name_${SUBJECT}
+
+echo /scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/freesurfer/*${SUBJECT}/ses-baselineYear1Arm1/mri/orig/001.mgz
+
+echo /scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/freesurfer/*${SUBJECT}/ses-baselineYear1Arm1/mri/orig/T2raw.mgz
 
 sleep 10
 
 # copy the subject folder to /tmp
-cp -rfv $ABCD/fs/\`cat /tmp/tmp_t1name_${SUBJECT} \` /tmp
+#cp -rfv $ABCD/fs/\`cat /tmp/tmp_t1name_${SUBJECT} \` /tmp
 
-rm /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`/scripts/IsRunning.lh+rh
+#rm /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`/scripts/IsRunning.lh+rh
 
 recon-all -sd /tmp \
-          -s \`cat /tmp/tmp_t1name_${SUBJECT} \` \
-          -T2 /tmp/sub-${SUBJECT}/ses-baselineYear1Arm1/anat/sub-${SUBJECT}_ses-baselineYear1Arm1_*_T2w.nii \
+          -s sub-${SUBJECT} \
+          -T2 /scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/freesurfer/*${SUBJECT}/ses-baselineYear1Arm1/mri/orig/T2raw.mgz \
           -T2pial \
           -autorecon3 \
           -parallel -openmp 2
           # -sd $ABCD/fs \
 #           -hippocampal-subfields-T1 \
 
-segmentHA_T2.sh  \`cat /tmp/tmp_t1name_${SUBJECT} \` \
-                /tmp/sub-${SUBJECT}/ses-baselineYear1Arm1/anat/sub-${SUBJECT}_ses-baselineYear1Arm1_*_T2w.nii \
+segmentHA_T2.sh  sub-${SUBJECT} \
+                /scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/freesurfer/*${SUBJECT}/ses-baselineYear1Arm1/mri/orig/T2raw.mgz \
                 T2 \
                 1 \
                 /tmp
@@ -99,14 +103,19 @@ segmentHA_T2.sh  \`cat /tmp/tmp_t1name_${SUBJECT} \` \
 
 cd /tmp
 
-tar -cvf \`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
-        \`cat /tmp/tmp_t1name_${SUBJECT} \`
+#tar -cvf \`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
+#        \`cat /tmp/tmp_t1name_${SUBJECT} \`
+tar -cvf sub-${SUBJECT}.tar \
+      sub-${SUBJECT}
 
-cp \`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
-   $ABCD/fs
+#cp \`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
+#   $ABCD/fs
 
-tar -xvf $ABCD/fs/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
-    -C $ABCD/fs
+cp sub-${SUBJECT}.tar \
+  /scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/freesurfer7
+  
+#tar -xvf $ABCD/fs/\`cat /tmp/tmp_t1name_${SUBJECT} \`.tar \
+ #   -C $ABCD/fs
 
 
 
@@ -133,7 +142,7 @@ rm batch_fs_*
 n_list=`wc ${list} | awk '{print $1}'`
 # n_split=$((n_list/119+1))
 #n_split=$((150*16))
-n_split=$((66*24))
+n_split=$((461*24))
 
 split -l $n_split $CMD_batch batch_fs_
 
