@@ -85,7 +85,7 @@ recon-all -sd /tmp \
           -s sub-${SUBJECT} \
           -T2 /scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/freesurfer/*${SUBJECT}/ses-baselineYear1Arm1/mri/orig/T2raw.mgz \
           -T2pial \
-          -autorecon3 \
+          -all \
           -parallel -openmp 2
           # -sd $ABCD/fs \
 #           -hippocampal-subfields-T1 \
