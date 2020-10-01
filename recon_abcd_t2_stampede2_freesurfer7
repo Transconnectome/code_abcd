@@ -81,6 +81,7 @@ sleep 10
 #rm /tmp/\`cat /tmp/tmp_t1name_${SUBJECT} \`/scripts/IsRunning.lh+rh
 
 recon-all -sd /tmp \
+          -i /scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/freesurfer/*${SUBJECT}/ses-baselineYear1Arm1/mri/orig/001.mgz \
           -s sub-${SUBJECT} \
           -T2 /scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/freesurfer/*${SUBJECT}/ses-baselineYear1Arm1/mri/orig/T2raw.mgz \
           -T2pial \
