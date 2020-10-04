@@ -55,10 +55,10 @@ cd $ABCD/mrtrix/sub-${s}
 ################################################################################
 ################################################################################
 
-mrconvert /scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/freesurfer/sub-NDARINV02UVMTY7/ses-baselineYear1Arm1/mri/lh.hippoAmygLabels-T1-T2.v21.FSvoxelSpace.mgz \
+mrconvert /scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/freesurfer/sub-${s}/ses-baselineYear1Arm1/mri/lh.hippoAmygLabels-T1-T2.v21.FSvoxelSpace.mgz \
      lh.hippoAmygLabels-T1-T2.v21.FSvoxelSpace.nii.gz -force
 
-mrconvert /scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/freesurfer/sub-NDARINV02UVMTY7/ses-baselineYear1Arm1/mri/rh.hippoAmygLabels-T1-T2.v21.FSvoxelSpace.mgz \
+mrconvert /scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/freesurfer/sub-${s}/ses-baselineYear1Arm1/mri/rh.hippoAmygLabels-T1-T2.v21.FSvoxelSpace.mgz \
      rh.hippoAmygLabels-T1-T2.v21.FSvoxelSpace.nii.gz -force
 
 mrconvert mr_DTI_MD.mif.gz \
@@ -89,12 +89,14 @@ rm stats_hippo_dti.csv
 
 for metric in MD FA AD RD
   do
-    for r in `echo \$roilist`
+    for r in \`echo \$roilist\`
       do
         for hemi in lh rh
           do
             fslmaths \${hemi}.hippoAmygLabels-T1-T2.v21.FSvoxelSpace -thr \$r -uthr \$r -bin /tmp/${s}_\${hemi}_\${r}
-            export mean=`fslmeants -i mr_DTI_\${metric}_brain_warped.nii.gz -m /tmp/${s}_\${hemi}_\${r}`
+
+            export mean=\`fslmeants -i mr_DTI_\${metric}_brain_warped.nii.gz -m /tmp/${s}_\${hemi}_\${r}\`
+
             [ ! -z "\$mean" ] && echo "\${hemi}_\${metric}_\${r}, \$mean" >> stats_hippo_dti.csv
           done
       done
