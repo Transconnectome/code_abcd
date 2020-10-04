@@ -94,7 +94,7 @@ for metric in MD FA AD RD
         for hemi in lh rh
           do
             fslmaths \${hemi}.hippoAmygLabels-T1-T2.v21.FSvoxelSpace -thr \$r -uthr \$r -bin /tmp/${s}_\${hemi}_\${r}
-            export mean=`fslmeants -i mr_DTI_\${metric}_brain_warped.nii.gz -m /tmp/${s}_\${hemi}_\${r}`
+            export mean=\`fslmeants -i mr_DTI_\${metric}_brain_warped.nii.gz -m /tmp/${s}_\${hemi}_\${r}\`
             [ ! -z "\$mean" ] && echo "\${hemi}_\${metric}_\${r}, \$mean" >> stats_hippo_dti.csv
           done
       done
