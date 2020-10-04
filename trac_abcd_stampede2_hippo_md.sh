@@ -52,105 +52,53 @@ export ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS
 
 cd $ABCD/mrtrix/sub-${s}
 
-
-##benchmark time is ~8M using TACC-SKX-96 threads##############################
-
- ################################################################################
- ################################### STREAMLINE TRACTOGRAPHY ####################
- ###########################################(2.5 Min for 1M)#####################
- ###########################################(60 Min for 20M)#####################
-
- ##tckgen and connectome (time to 1M for tckgen = 5.5m "stampede-Theta");
- ###                      (time to 1M for tckgen = 2.5m "TACC-Stampede2-SKX")
-
- time tckgen WM_FODs_upsample125_norm.mif.gz \
-   $SCRATCH/tmp/mr_track_10M_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID}.tck \
-   -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample125.nii.gz \
-   -backtrack \
-   -crop_at_gmwmi \
-   -seed_dynamic WM_FODs_upsample125_norm.mif.gz \
-   -angle 22.5 -maxlength 250 -minlength 10 -power 1.0 -select 10M -force \
-   -nthreads ${threads} && echo 'tckgen done'**********
-
-
-#-cutoff 0.6
-
-
-################################################################################
-################################### TCKSIFT ####################
-###########################################(5 Min for 1M)#######################
-################################################################################
-
-time tcksift -act 5tt_freesurfer_diff_flt_dof6_warped_synant_upsample125.nii.gz \
-             $SCRATCH/tmp/mr_track_10M_\${LAUNCHER_JID}_\${LAUNCHER_TSK_ID}.tck \
-             WM_FODs_upsample125_norm.mif.gz \
-             mr_track_1M_SIFT.tck -term_number 1M -force -nthreads ${threads} && \
-             echo 'sift done'*******
-
-################################################################################
-################################################################################
-################################### tck2connectome #############################
 ################################################################################
 ################################################################################
 
-     ## FA, MD, AD, RD (L2+L3/2)
-     for dti in FA MD AD RD
-     do
+mrconvert /scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/freesurfer/sub-NDARINV02UVMTY7/ses-baselineYear1Arm1/mri/lh.hippoAmygLabels-T1-T2.v21.FSvoxelSpace.mgz \
+     lh.hippoAmygLabels-T1-T2.v21.FSvoxelSpace.nii.gz -force
 
-     tcksample mr_track_1M_SIFT.tck mr_DTI_\${dti}.mif.gz \
-       mr_track_1M_SIFT_mean_\${dti}.csv \
-       -stat_tck mean -force -nthreads ${threads}
+mrconvert /scratch/03263/jcha9928/data/ABCD/data_bids_derivatives/freesurfer/sub-NDARINV02UVMTY7/ses-baselineYear1Arm1/mri/rh.hippoAmygLabels-T1-T2.v21.FSvoxelSpace.mgz \
+     rh.hippoAmygLabels-T1-T2.v21.FSvoxelSpace.nii.gz -force
 
-     #tcksample mr_track_global_1e9.tck mr_DTI_\${dti}.mif.gz \
-     #  mr_track_global_1e9_mean_\${dti}.csv \
-     #   -stat_tck mean -force -nthreads ${threads}
-     done
+mrconvert mr_DTI_MD.mif.gz \
+     mr_DTI_MD.nii.gz
+mrconvert mr_DTI_RD.mif.gz \
+     mr_DTI_RD.nii.gz
+mrconvert mr_DTI_AD.mif.gz \
+     mr_DTI_AD.nii.gz
+mrconvert mr_DTI_FA.mif.gz \
+     mr_DTI_FA.nii.gz
 
+time $WORK/code/antswarp mr_meanb0_bet \
+                         brain
 
-     for im in aparc+aseg aparc.a2009s+aseg
-     do
-     #1.count
-     tck2connectome -force -zero_diagonal -nthreads ${threads} \
-                 mr_track_1M_SIFT.tck nodes_\${im}.mif.gz mr_connectome_sift_1M_\${im}_count.csv
-     #tck2connectome -force -zero_diagonal -nthreads ${threads} \
-     #            mr_track_global_1e9.tck nodes_\${im}.mif.gz mr_connectome_global1e9_\${im}_count.csv
-     #2.length
-     tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_1M_SIFT.tck nodes_\${im}.mif.gz \
-                 mr_connectome_sift_1M_\${im}_length.csv -nthreads ${threads}
-     #tck2connectome -force -zero_diagonal -scale_length -stat_edge mean mr_track_global_1e9.tck nodes_\${im}.mif.gz \
-     #            mr_connectome_global1e9_\${im}_length.csv -nthreads ${threads}
+WarpImageMultiTransform 3 \
+   mr_DTI_MD.nii.gz \
+   mr_DTI_MD_brain_warped.nii.gz \
+   -R brain.nii.gz \
+   --use-BSpline \
+mr_meanb0_bet2brain_synantsWarp.nii.gz mr_meanb0_bet2brain_synantsAffine.txt
 
-     #3-7: FA MD M0 AD RD
-        for dti in FA MD AD RD
-        do
+roilist="7001 7002 7003 7004 7005 7007 7008 7009 7010 7011 7012 7013 7014 7015 \
+7016 7017 7018 7019 7020 193 194 195 196 197 198 199 200 201 202 203 204 205 206\
+ 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 223 224 225 226 227 \
+ 228 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246"
 
-     tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_1M_SIFT_mean_\${dti}.csv \
-                   -nthreads ${threads} mr_track_1M_SIFT.tck nodes_\${im}.mif.gz \
-                   mr_connectome_sift_1M_\${im}_\${dti}.csv
+rm stats_hippo_dti.csv
 
-     #tck2connectome -force -zero_diagonal -stat_edge mean -scale_file mr_track_2M_SIFT_mean_\${dti}.csv \
-     #             -nthreads ${threads} mr_track_global_1e9.tck nodes_\${im}.mif.gz \
-     #              mr_connectome_global1e9_\${im}_\${dti}.csv
-        done
-     done
-
-  ####################################################################################################################################
-# END OF TRACTOGRAPHY    ######################################################################################################################################
-
-
-#done
-
-#### COPY ALL THE FILES TO SCRATCH ####
-# cp -rfv ../dwi $ABCD/fs/${s}/
-#######################################################################
-
-# pigz#
-pigz --best -b 1280 -f -v -T -p ${threads} *mif
-pigz --best -b 1280 -f -v -T -p ${threads} *nii
-# cp -rfv /tmp/${s}/ $ABCD/fs/${s}
-
-# cp -rfv /tmp/sub-\$subjid/ses-baselineYear1Arm1/dwi/ \
-#         $ABCD/fs/\`head -n 1 /tmp/tmp_${s}_t1name\`
+for metric in MD FA AD RD
+  do
+    for r in `echo \$roilist`
+      do
+        for hemi in lh rh
+          do
+            fslmaths \${hemi}.hippoAmygLabels-T1-T2.v21.FSvoxelSpace -thr \$r -uthr \$r -bin /tmp/${s}_\${hemi}_\${r}
+            export mean=`fslmeants -i mr_DTI_\${metric}_brain_warped.nii.gz -m /tmp/${s}_\${hemi}_\${r}`
+            [ ! -z "\$mean" ] && echo "\${hemi}_\${metric}_\${r}, \$mean" >> stats_hippo_dti.csv
+          done
+      done
+  done
 
 echo "I THINK EVERYTHING IS DONE BY NOW"
 
@@ -172,7 +120,7 @@ done
 rm batch_abcd_*
 n_list=`wc ${list} | awk '{print $1}'`
 # n_split=$((n_list/256+1))
-n_split=$((128*8))
+n_split=$((128*48))
 # n_split=1971
 split -l $n_split $CMD_batch batch_abcd_
 
@@ -194,8 +142,8 @@ cat<<EOM > $launch_script
 #SBATCH -p skx-normal          # Queue (partition) name
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
 #SBATCH -N 128                            # Total # of nodes
-#SBATCH --ntasks-per-node 8            # Total # of mpi tasks
-#SBATCH -t 8:00:00        # Run time (hh:mm:ss)
+#SBATCH --ntasks-per-node 48            # Total # of mpi tasks
+#SBATCH -t 2:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
 #SBATCH --mail-type=all    # Send email at begin and end of job
 #SBATCH -A TG-IBN180001
@@ -215,5 +163,5 @@ export LAUNCHER_JOB_FILE=`echo $b`
 \$LAUNCHER_DIR/paramrun
 EOM
 
-sbatch $launch_script
+echo sbatch $launch_script
 done
