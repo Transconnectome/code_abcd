@@ -73,17 +73,21 @@ mrconvert mr_DTI_FA.mif.gz \
 time $WORK/code/antswarp mr_meanb0_bet \
                          brain
 
-WarpImageMultiTransform 3 \
-   mr_DTI_MD.nii.gz \
-   mr_DTI_MD_brain_warped.nii.gz \
+for metric in MD FA AD RD
+do
+  WarpImageMultiTransform 3 \
+   mr_DTI_\${metric}.nii.gz \
+   mr_DTI_\${metric}_brain_warped.nii.gz \
    -R brain.nii.gz \
    --use-BSpline \
 mr_meanb0_bet2brain_synantsWarp.nii.gz mr_meanb0_bet2brain_synantsAffine.txt
+done
 
-roilist="7001 7002 7003 7004 7005 7007 7008 7009 7010 7011 7012 7013 7014 7015 \
-7016 7017 7018 7019 7020 193 194 195 196 197 198 199 200 201 202 203 204 205 206\
- 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 223 224 225 226 227 \
- 228 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246"
+
+##calulcating regional diffusion coefficients
+
+roilist="7001 7003 7005 7006 7007 7008 7009 7010 7015 203 211 212 215 226 233 \
+234 235 236 237 238 239 240 241 242 243 244 245 246"
 
 rm stats_hippo_dti.csv
 
