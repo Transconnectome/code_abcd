@@ -55,7 +55,7 @@ source ~/.bashrc
 ################################################################################
 ################################################################################
 
-ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=2
+ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=1
 
 # cp -frv \${DATA_target}/${s} /tmp
 
@@ -92,6 +92,7 @@ n_list=`wc ${list} | awk '{print $1}'`
 # n_split=$((n_list/119+1))
 #n_split=$((150*16))
 n_split=$((461*24))
+n_split=$((5690)) #split into two
 
 split -l $n_split $CMD_batch batch_fs_
 
@@ -106,9 +107,8 @@ cat<<EOM > $launch_script
 #%###SBATCH -e ./job/ABCD_t2.e%j       # Name of stderr error file
 #SBATCH -p normal          # Queue (partition) name
 ######SBATCH -N `wc -l $b | awk '{print $1}'`               # Total # of nodes
-######SBATCH -N 150                            # Total # of nodes
-#SBATCH -N 66
-#SBATCH --ntasks-per-node 24            # Total # of mpi tasks
+#SBATCH -N 119
+#SBATCH --ntasks-per-node 48            # Total # of mpi tasks
 #SBATCH -t 6:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-user=cha.jiook@gmail.com
 #SBATCH --mail-type=all    # Send email at begin and end of job
